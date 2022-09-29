@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <stdio.h>
-#include <librobus.h>
+#include <LibRobus.h>
 
 #define GAUCHE 0
 #define DROITE 1
@@ -10,8 +10,8 @@
 
 //Déclaration des fonctions
 float mm_a_pulse(float distance_mm);
-void AccelerationRoue(int polarite, float distance_mm, float v_max);
-void deplacementRoue(int ID_roue, float distance_mm, float vitesseActuelle);
+void AccelerationRoue(int ID_roue, float distance_mm, float v_initiale, float v_finale);
+void deplacementRoue(int ID_roue, float distance_mm, float v_initiale);
 void Rotation(int angleDegre, int direction);
 
 void setup()
@@ -38,30 +38,53 @@ void loop()
 }
 
 //Définitions des fonctions
-float mm_a_pulse(float distance_mm)
+float mm_a_pulse(float distance_mm)//TEMPORAIRE
 {
   return (distance_mm*13.37);
 }
 
-void AccelerationRoue(int polarite, float distance_mm, float v_max)
+void AccelerationRoue(int ID_roue, float distance_mm, float v_initiale, float v_finale)
 {
-  
+  float v = v_initiale;
+
+  if(v_initiale < v_finale)
+  {
+    while(v <= v_finale)
+    {
+      delay((distance_mm/0.1)/1000);
+      v = v + v_finale/1000;
+      MOTOR_SetSpeed(ID_roue, v);
+    }
+  }
+  else if(v_initiale > v_finale)
+  {
+    while(v >= v_finale)
+    {
+      delay((distance_mm/0.1)/1000);
+      v = v - v_initiale/1000;
+      MOTOR_SetSpeed(ID_roue, v);
+    }
+  }
+  else
+  {
+    //
+  }
 }
 
-void deplacementRoue(int ID_roue, float distance_mm, float vitesseActuelle)
+void deplacementRoue(int ID_roue, float distance_mm, float v_initiale)
 {
   float v_max = 0.5;
-  //vitesseActuelle sera codé plus tard et devra changer la valeur de 40 minimum
-  if(distance_mm >= 400) //Pour vitesseActuelle = 0
+  //v_initiale sera codé plus tard et devra changer la valeur de 40 minimum
+  if(distance_mm >= 400) //Pour v_initiale = 0
   {    
-    //AccélérationRoue(POSITIVE, 200, v_max);
+    AccelerationRoue(ID_roue, 200, v_initiale, v_max);
     ENCODER_ReadReset(ID_roue);
 
     while(ENCODER_Read(ID_roue) < mm_a_pulse(distance_mm - 400))
       MOTOR_SetSpeed(ID_roue, v_max);
     ENCODER_ReadReset(ID_roue);
 
-    //AccélérationRoue(NEGATIVE, 200, v_max);
+    AccelerationRoue(ID_roue, 200, v_max, v_initiale);
     ENCODER_ReadReset(ID_roue);
   }
   else if(distance_mm < 400)
