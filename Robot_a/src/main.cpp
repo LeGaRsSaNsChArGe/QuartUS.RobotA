@@ -5,7 +5,13 @@
 #define GAUCHE 0
 #define DROITE 1
 
+#define NEGATIVE -1
+#define POSITIVE 1
+
 //Déclaration des fonctions
+float mm_a_pulse(float distance_mm);
+void AccelerationRoue(int polarite, float distance_mm, float v_max);
+void deplacementRoue(int ID_roue, float distance_mm, float vitesseActuelle);
 void Rotation(int angleDegre, int direction);
 
 void setup()
@@ -26,9 +32,47 @@ void loop()
   Rotation(45, GAUCHE);
   Rotation(45, GAUCHE);
 
+  //deplacementRoue(GAUCHE, 400, 0);
+  //deplacementRoue(DROITE, 400, 0);
+
 }
 
 //Définitions des fonctions
+float mm_a_pulse(float distance_mm)
+{
+  return (distance_mm*13.37);
+}
+
+void AccelerationRoue(int polarite, float distance_mm, float v_max)
+{
+  
+}
+
+void deplacementRoue(int ID_roue, float distance_mm, float vitesseActuelle)
+{
+  float v_max = 0.5;
+  //vitesseActuelle sera codé plus tard et devra changer la valeur de 40 minimum
+  if(distance_mm >= 400) //Pour vitesseActuelle = 0
+  {    
+    //AccélérationRoue(POSITIVE, 200, v_max);
+    ENCODER_ReadReset(ID_roue);
+
+    while(ENCODER_Read(ID_roue) < mm_a_pulse(distance_mm - 400))
+      MOTOR_SetSpeed(ID_roue, v_max);
+    ENCODER_ReadReset(ID_roue);
+
+    //AccélérationRoue(NEGATIVE, 200, v_max);
+    ENCODER_ReadReset(ID_roue);
+  }
+  else if(distance_mm < 400)
+  {
+    //À concevoir
+  }
+  else
+  {
+    //erreur, exemple un nomre négatif
+  }
+}
 
 void Rotation(int angleDegre, int direction)
 {
