@@ -17,12 +17,18 @@
 //Variables globales
 unsigned long t_actuel_cycle;
 
+int total_droit = 0;
+int total_gauche = 0;
+float v_max = 0.3; 
+
 //Déclaration des fonctions
 float mm_a_pulses(float distance_mm);
 float pulses_a_mm(float pulses);
 float angleDegre_a_pulses(float angleDegre);
 int32_t Acceleration(int direction, float d_pulses, float v_initiale, float v_finale, float* v_actuelle);
 void Deplacement(float angleDegre, float distance_mm);
+
+float pid_droit(int pulse_gauche, int pulse_droit);
 
 void setup()
 {
@@ -35,12 +41,38 @@ void loop()
   if(ROBUS_IsBumper(3))
   {
     //TESTS
-    Deplacement(0, 1000);
+    //Deplacement(0, 1000);
     //Deplacement(90, 0);
     //Deplacement(-45, 0);
 
     //Deplacement(360, 0);
     //Deplacement(-360, 0);
+
+
+    float v_corrige = v_max;
+    int t_delay = 0;
+
+    while(ENCODER_Read(GAUCHE) < 1000/0.0748125)
+    {
+      MOTOR_SetSpeed(GAUCHE, v_max);
+      MOTOR_SetSpeed(DROITE, v_corrige);
+
+      if(t_delay >= 500)
+      {
+        Serial.print("\n\tVITESSE GAUCHE: ");
+        Serial.print(v_max);
+        Serial.print("\n\tVITESSE DROITE: ");
+        Serial.print(v_corrige);
+
+        t_delay = 0;
+      }
+
+      float correction = pid_droit(ENCODER_ReadReset(GAUCHE), ENCODER_ReadReset(DROITE) ); 
+      v_corrige = v_max + correction; 
+
+      delay(50);
+      t_delay += 50;
+    }
 
     //PARCOURS
     //Deplacement(0, 1225);
@@ -314,3 +346,27 @@ void Deplacement(float angleDegre, float distance_mm)// distance positive = avan
   ENCODER_Reset(GAUCHE);
   ENCODER_Reset(DROITE);
 }*/
+
+float pid_droit(int pulse_gauche, int pulse_droit)
+{   
+  float correction = 0;
+
+  if(pulse_gauche != pulse_droit)
+  { 
+    //Erreur ponderee sur vitesse 
+    float erreur_cycle = (pulse_gauche-pulse_droit)*0.001; //facteur de ponderation KP (essaie erreur)
+
+    //Erreur sur le compteur
+    float erreur_compteur = (total_gauche-total_droit)*0.02; //facteur de ponderation KI (essaie erreur)
+
+    // Correction sur la vitesse
+    correction = erreur_cycle + erreur_compteur;
+  }
+
+  //Ajout au compteur
+  total_droit  += ENCODER_ReadReset(DROITE);
+  total_gauche +=   ENCODER_ReadReset(GAUCHE);
+
+  return(correction); 
+
+}
