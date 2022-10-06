@@ -3,6 +3,7 @@
 #include <LibRobus.h>
 #include <math.h>
 
+//Defines
 #define DEVANT -1
 #define GAUCHE 0
 #define DROITE 1
@@ -11,12 +12,16 @@
 #define POSITIF 1
 
 #define V_MAX 1
+#define TEMPS_CYCLE 50
+
+//Variables globales
+unsigned long t_actuel_cycle;
 
 //Déclaration des fonctions
 float mm_a_pulses(float distance_mm);
 float pulses_a_mm(float pulses);
 float angleDegre_a_pulses(float angleDegre);
-int32_t Acceleration(int direction, float d_pulses, float v_initiale, float v_finale, float v_actuelle);
+int32_t Acceleration(int direction, float d_pulses, float v_initiale, float v_finale, float* v_actuelle);
 void Deplacement(float angleDegre, float distance_mm);
 
 void setup()
@@ -30,25 +35,25 @@ void loop()
   if(ROBUS_IsBumper(3))
   {
     //TESTS
-    //Deplacement(0, 1000);
-    Deplacement(90, 0);
+    Deplacement(0, 1000);
+    //Deplacement(90, 0);
     //Deplacement(-45, 0);
 
     //Deplacement(360, 0);
     //Deplacement(-360, 0);
 
     //PARCOURS
-    Deplacement(0, 1225);
-    Deplacement(-90, 0);
-    Deplacement(0, 900);
-    Deplacement(90, 0);
-    Deplacement(0, 894);
-    Deplacement(45, 0);
-    Deplacement(0, 1850);
-    Deplacement(-90, 0);
-    Deplacement(0, );
-    Deplacement(45, 0);
-    Deplacement(0, );
+    //Deplacement(0, 1225);
+    //Deplacement(-90, 0);
+    //Deplacement(0, 900);
+    //Deplacement(90, 0);
+    //Deplacement(0, 894);
+    //Deplacement(45, 0);
+    //Deplacement(0, 1850);
+    //Deplacement(-90, 0);
+    //Deplacement(0, );
+    //Deplacement(45, 0);
+    //Deplacement(0, );
   }
 }
 
@@ -79,48 +84,53 @@ int32_t Acceleration(int direction, float d_pulses, float v_initiale, float v_fi
     Serial.println("\t\t\tACCÉLÉRATION OPPOSÉE");
   else if(v_initiale == v_finale)
     Serial.println("\t\tACCÉLÉRATION NULLE / VITESSE CONSTANTE");
-
+  
   while((fabs(ENCODER_Read(GAUCHE)) < d_pulses) || ((d_pulses == -1) && (*v_actuelle != v_finale)))
   {
-    //Accélération directe
-    if((v_initiale < v_finale) && (*v_actuelle < v_finale))
-      *v_actuelle += 0.05;
-    //Accélération opposée
-    else if((v_initiale > v_finale) && (*v_actuelle > v_finale))
-      *v_actuelle -= 0.05;
-    //Accélération nulle / Vitesse constante
-    else if((v_initiale == v_finale) && (*v_actuelle == v_finale)) {}
-    else
-      return fabs(ENCODER_Read(GAUCHE));
+    if(millis() - t_actuel_cycle > TEMPS_CYCLE)
+    {
+      t_actuel_cycle = millis();
+
+      //Accélération directe
+      if((v_initiale < v_finale) && (*v_actuelle < v_finale))
+        *v_actuelle += 0.05;
+      //Accélération opposée
+      else if((v_initiale > v_finale) && (*v_actuelle > v_finale))
+        *v_actuelle -= 0.05;
+      //Accélération nulle / Vitesse constante
+      else if((v_initiale == v_finale) && (*v_actuelle == v_finale)) {}
+      else
+        return fabs(ENCODER_Read(GAUCHE));
     
-    if(direction == DEVANT)
-    {
-      MOTOR_SetSpeed(GAUCHE, *v_actuelle);
-      MOTOR_SetSpeed(DROITE, *v_actuelle);
-    }
-    else if(direction == GAUCHE)
-    {
-      MOTOR_SetSpeed(GAUCHE, -*v_actuelle);
-      MOTOR_SetSpeed(DROITE, *v_actuelle);
-    }
-    else if(direction == DROITE)
-    {
-      MOTOR_SetSpeed(GAUCHE, *v_actuelle);
-      MOTOR_SetSpeed(DROITE, -*v_actuelle);
-    }
-    else
-      printf("valeur de direction impossible...");
+      if(direction == DEVANT)
+      {
+        MOTOR_SetSpeed(GAUCHE, *v_actuelle);
+        MOTOR_SetSpeed(DROITE, *v_actuelle);
+      }
+      else if(direction == GAUCHE)
+      {
+        MOTOR_SetSpeed(GAUCHE, -*v_actuelle);
+        MOTOR_SetSpeed(DROITE, *v_actuelle);
+      }
+      else if(direction == DROITE)
+      {
+        MOTOR_SetSpeed(GAUCHE, *v_actuelle);
+        MOTOR_SetSpeed(DROITE, -*v_actuelle);
+      }
+      else
+        printf("valeur de direction impossible...");
 
-    delay(1);
+      //delay(1);
 
-    //Serial.print("DISTANCE PARCOURUE: ");
-    //Serial.print(pulses_a_mm(ENCODER_Read(GAUCHE)));
-    Serial.print("\t\tVITESSE INITIALE: ");
-    Serial.print(v_initiale);
-    Serial.print("\t\tVITESSE ACTUELLE: ");
-    Serial.print(*v_actuelle);
-    Serial.print("\t\tVITESSE FINALE: ");
-    Serial.println(v_finale);
+      //Serial.print("DISTANCE PARCOURUE: ");
+      //Serial.print(pulses_a_mm(ENCODER_Read(GAUCHE)));
+      Serial.print("\t\tVITESSE INITIALE: ");
+      Serial.print(v_initiale);
+      Serial.print("\t\tVITESSE ACTUELLE: ");
+      Serial.print(*v_actuelle);
+      Serial.print("\t\tVITESSE FINALE: ");
+      Serial.println(v_finale);
+    }
   }
   return fabs(ENCODER_Read(GAUCHE));
 
@@ -175,8 +185,8 @@ void Deplacement(float angleDegre, float distance_mm)// distance positive = avan
   Serial.print("\t\t\tVITESSE ACTUELLE: ");
   Serial.println(v_actuelle);
 
-  //d_pulses_parcourue += Acceleration(direction, d_pulses - d_pulses_parcourue, v_actuelle, 0, &v_actuelle);//Décélération
-  d_pulses_parcourue += Acceleration(direction, -1, v_actuelle, 0, &v_actuelle);//Décélération
+  d_pulses_parcourue += Acceleration(direction, d_pulses - d_pulses_parcourue, v_actuelle, 0, &v_actuelle);//Décélération
+  //d_pulses_parcourue += Acceleration(direction, -1, v_actuelle, 0, &v_actuelle);//Décélération
 
   MOTOR_SetSpeed(GAUCHE, 0);
   MOTOR_SetSpeed(DROITE, 0);
