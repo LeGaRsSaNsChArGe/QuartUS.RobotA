@@ -53,6 +53,11 @@ La partie du plan pour le bras n'a pas été faite étant donné qu'on a pas enc
 #define JAUNE 3
 #define ROUGE 4
 
+#define DELrouge 24
+#define DELbleu 32
+#define DELvert 28
+#define DELjaune 26
+
 #define TEMPS_CYCLE 50
 
 #define V_VOULUE 0.5
@@ -78,6 +83,16 @@ void cycle(); //Le gros stock
 void setup()
 {
   BoardInit();
+
+  //Initialisation des DEL à LOW
+  pinMode(DELrouge, OUTPUT);
+  pinMode(DELbleu, OUTPUT);
+  pinMode(DELvert, OUTPUT);
+  pinMode(DELjaune, OUTPUT);
+  digitalWrite(DELrouge, LOW);
+  digitalWrite(DELbleu, LOW);
+  digitalWrite(DELvert, LOW);
+  digitalWrite(DELjaune, LOW);
   
   MOTOR_SetSpeed(GAUCHE, 0);
   MOTOR_SetSpeed(DROITE, 0);
@@ -91,14 +106,67 @@ void setup()
 //Main--------------------------------------------------------
 void loop()
 {
+  int temps_5hz = 0;
 
-  //À FAIRE(1) : Vérification du signal de sifflet
-  //SI le signal correspond à 5 kHz pendant 2 secondes ALORS signal_sifflet := true ET allume la DEL correspondante à la variable couleur_voulue.
+  while(analogRead(A10) < analogRead(A11))
+  {
+    delay(50);
+    temps_5hz += 50;
+
+    Serial.print(analogRead(A10));
+    Serial.print("\t");
+    Serial.println(analogRead(A11));
+
+    Serial.println(temps_5hz);
+  }
+
+  if (temps_5hz > 1900 && temps_5hz < 2100)
+  {
+    Serial.println("SIFFLET = TRUE");
+    
+    signal_sifflet = true; //Si le signal correspond à 5 kHz pendant 2 secondes
+    switch(couleur_voulue) //Allume la DEL correspondante à la variable couleur_voulue
+    {
+      case ROUGE:
+      digitalWrite(DELrouge, HIGH);
+      break;
+      case BLEU:
+      digitalWrite(DELbleu, HIGH);
+      break;
+      case VERT:
+      digitalWrite(DELvert, HIGH);
+      break;
+      case JAUNE:
+      digitalWrite(DELjaune, HIGH);
+      break;
+      default:
+      break;
+    }
+  }
 
   if(signal_sifflet && tour <= 2 && (millis() - t_actuel_cycle > TEMPS_CYCLE)) //Mettez en commentaire et faite votre propre code dans le loop si vous testez des sections ou des fonctions.
   {
     t_actuel_cycle = millis();
-    cycle(); //Le cycle du robot à faire à chaque intervalle de TEMPS_CYCLE
+    //cycle(); //Le cycle du robot à faire à chaque intervalle de TEMPS_CYCLE
+
+
+    //TESTS
+    etat_suiveurLigne = VerificationSuiveurLigne(); //Vérification de l'état du suiveur de ligne
+    if(etat_suiveurLigne.charAt(1) == 'G') //Ne détecte plus de BLANC à GAUCHE
+    {
+      MOTOR_SetSpeed(GAUCHE, V_VOULUE);
+      MOTOR_SetSpeed(DROITE, VitesseCorrigee(0.8));
+    }
+    else if(etat_suiveurLigne.charAt(1) == 'D') //Ne détecte plus de BLANC à DROITE
+    {
+      MOTOR_SetSpeed(GAUCHE, V_VOULUE*0.8);
+      MOTOR_SetSpeed(DROITE, VitesseCorrigee(1.25));
+    }
+    else
+    {
+      MOTOR_SetSpeed(GAUCHE, V_VOULUE);
+      MOTOR_SetSpeed(DROITE, VitesseCorrigee(1));
+    }
   }
   else if(tour > 2)
   {
@@ -128,17 +196,13 @@ int VerificationCouleur()
   rouge = ROUGE
   */
 
-  return couleur;
+  return JAUNE;
 }
 
 String VerificationSuiveurLigne()
 {
   String etat;
-
-  float voltage_recu;//Variable de voltage reçu du suiveur de ligne
-
-  //À FAIRE(4) : Changement de voltage_recu en fonction du voltage reçu du suiveur de ligne
-  //Serait-il utile de mettre un compteur de cycles de suite qu'un état est détecté avant de retourner l'état ? À vous de voir en testant. Demandez-moi si vous avez besoin d'aide (Seb)
+  float voltage_recu = analogRead(A12)*5/1023;//Variable de voltage reçu du suiveur de ligne
 
   /*
   G : détection de noir à gauche du robot
@@ -146,22 +210,22 @@ String VerificationSuiveurLigne()
   D : détection de noir à droite du robot
   */
 
-  if(voltage_recu > 0/*Entre tant et plus*/)
-    etat = "GCD";
-  else if(6 > voltage_recu > 0/*Entre tant et tant*/)
-    etat = "GC-";
-  else if(6 > voltage_recu > 0/*Entre tant et tant*/)
-    etat = "G-D";
-  else if(6 > voltage_recu > 0/*Entre tant et tant*/)
-    etat = "-CD";
-  else if(6 > voltage_recu > 0/*Entre tant et tant*/)
-    etat = "G--";
-  else if(6 > voltage_recu > 0/*Entre tant et tant*/)
-    etat = "-C-";
-  else if(6 > voltage_recu > 0/*Entre tant et tant*/)
-    etat = "--D";
-  else
+  if( 5 > voltage_recu > 4.9)
     etat = "---";
+  else if(3.7 > voltage_recu > 3.5)
+    etat = "--D";
+  else if(2.2 > voltage_recu > 2.05)
+    etat = "-C-";
+  else if(4.35 > voltage_recu > 4.2)
+    etat = "G--";
+  else if(0.8 > voltage_recu > 0.6)
+    etat = "-CD";
+  else if(2.9 > voltage_recu > 2.8)
+    etat = "G-D";
+  else if(1.45 > voltage_recu > 1.35)
+    etat = "GC-";
+  else 
+    etat = "GCD";
 
   return etat;
 }
@@ -170,20 +234,24 @@ int VerificationZone()
 {
   int zone;
 
-  if(couleur != NOIR && couleur != GRIS && etat_suiveurLigne.charAt(1) == 'C') //Zone de couleur
+  if(couleur != NOIR && couleur != GRIS && couleur != BLANC) //Zone de couleur
   {
-    if(zone == SUIVEUR_LIGNE)
+    /*if(zone == SUIVEUR_LIGNE)
     {
-      //À FAIRE(6) : On avance le robot à coup de delay tant qu'une couleur autre que Blanc, Noir ou gris n'est pas détectée. (WHILE VerificationCouleur != ...)
-    }
+      while(VerificationCouleur() == NOIR || VerificationCouleur() == BLANC) //Avance le robot jusqu'à ce que le capteur ne détecte plus de NOIR ou de BLANC
+      {
+        MOTOR_SetSpeed(GAUCHE, V_VOULUE);
+        MOTOR_SetSpeed(DROITE, VitesseCorrigee(1));
+      }
+    }*/
 
     zone = COULEUR;
   }
-  else if(tour == 1 && etat_suiveurLigne.charAt(1) != 'C') //Zone du suiveur de ligne
+  else if(tour == 1 && couleur == BLANC) //Zone du suiveur de ligne
   {
     zone = SUIVEUR_LIGNE;
   }
-  else if(tour == 2 && etat_suiveurLigne.charAt(1) != 'C') //Zone du raccourci
+  else if(tour == 2 && couleur == BLANC) //Zone du raccourci
   {
     //À FAIRE(7) : Avancer un peu, Tournant d'un angle sur lui-même vers la zone bleue pendant un delay
 
@@ -217,18 +285,18 @@ void cycle()
     switch(couleur_voulue - couleur)
     {
       case 0 :
-        MOTOR_SetSpeed(GAUCHE, VitesseCorrigee(V_VOULUE));
-        MOTOR_SetSpeed(DROITE, VitesseCorrigee(V_VOULUE));
+        MOTOR_SetSpeed(GAUCHE, V_VOULUE);
+        MOTOR_SetSpeed(DROITE, VitesseCorrigee(1));
         break;
       case 1 :
       case 2 :
-        MOTOR_SetSpeed(GAUCHE, VitesseCorrigee(V_VOULUE*1.2));
-        MOTOR_SetSpeed(DROITE, VitesseCorrigee(V_VOULUE*0.8));
+        MOTOR_SetSpeed(GAUCHE, V_VOULUE);
+        MOTOR_SetSpeed(DROITE, VitesseCorrigee(0.8));
         break;
       case -1 :
       case -2 :
-        MOTOR_SetSpeed(GAUCHE, VitesseCorrigee(V_VOULUE*0.8));
-        MOTOR_SetSpeed(DROITE, VitesseCorrigee(V_VOULUE*1.2));
+        MOTOR_SetSpeed(GAUCHE, V_VOULUE*0.8);
+        MOTOR_SetSpeed(DROITE, VitesseCorrigee(1.25));
         break;
       default:
         break;
@@ -236,7 +304,21 @@ void cycle()
   }
   else if(zone == SUIVEUR_LIGNE) //Zone du suiveur de ligne
   {
-    //À FAIRE(5) : Suiveur de ligne, chaque fois que la gauche capte du noir, on tourne un peu à droite comme dans la zone de couleur. Chaque fois que la droite capte du noir, on tourne un peu à gauche
+   if(etat_suiveurLigne.charAt(1) == 'G') //Ne détecte plus de BLANC à GAUCHE
+   {
+      MOTOR_SetSpeed(GAUCHE, V_VOULUE);
+      MOTOR_SetSpeed(DROITE, VitesseCorrigee(0.8));
+   }
+   else if(etat_suiveurLigne.charAt(1) == 'D') //Ne détecte plus de BLANC à DROITE
+   {
+      MOTOR_SetSpeed(GAUCHE, V_VOULUE*0.8);
+      MOTOR_SetSpeed(DROITE, VitesseCorrigee(1.25));
+   }
+   else
+   {
+      MOTOR_SetSpeed(GAUCHE, V_VOULUE);
+      MOTOR_SetSpeed(DROITE, VitesseCorrigee(1));
+   }
   }
   else if(zone == DEPART) //Ligne de départ/d'arrivée
   {
