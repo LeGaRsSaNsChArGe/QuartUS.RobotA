@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/planche"
+        android:icon="@drawable/icone_planche"
+        android:title="Planche" />
+
+    <item
+        android:id="@+id/pieces"
+        android:icon="@drawable/icone_pieces"
+        android:title="Pièces" />
+</menu>

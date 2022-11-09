@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.Partie">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/SquartusS"
+        android:background="?attr/colorPrimaryVariant"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:elevation="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/QuartUS"
+            app:layout_constraintEnd_toStartOf="@id/QuartUS"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/QuartUS"
+            app:srcCompat="@drawable/logo_udes" />
+
+        <LinearLayout
+            android:id="@+id/QuartUS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/Q"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-60dp"
+                android:fontFamily="@font/kallisto_light"
+                android:paddingStart="0dp"
+                android:paddingEnd="30dp"
+                android:text="Q"
+                android:textColor="@android:color/black"
+                android:textSize="60sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/uart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-60dp"
+                android:fontFamily="@font/alio_pro_medium"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:text="uart"
+                android:textColor="@android:color/black"
+                android:textSize="70sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/US"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/merriweather_regular"
+                android:paddingStart="30dp"
+                android:paddingEnd="0dp"
+                android:text="US"
+                android:textColor="@color/vertUDeS"
+                android:textSize="55sp"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/QuartUS"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/QuartUS"
+            app:layout_constraintTop_toTopOf="@id/QuartUS"
+            app:srcCompat="@drawable/logo_udes" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/outils"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:elevation="6dp"
+        app:layout_constraintTop_toBottomOf="@id/SquartusS"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menu_outils"/>
+
+    <FrameLayout
+        android:id="@+id/layout_partie"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/outils">
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menu_navigation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

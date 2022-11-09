@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.Accueil">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end|center_vertical"
+        android:paddingTop="5dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchBluetooth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/icon_bluetooth"
+            android:layout_alignTop="@id/icon_bluetooth"
+            android:checked="true"
+            android:theme="@style/Switch" />
+
+        <ImageButton
+            android:id="@+id/icon_bluetooth"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_toEndOf="@id/switchBluetooth"
+            android:layout_gravity="end"
+            android:background="@drawable/ic_baseline_bluetooth_24" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <!-- Ratio 1684 par 1569 -->
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginBottom="-30dp"
+            android:layout_alignStart="@+id/QuartUS"
+            android:layout_alignEnd="@+id/QuartUS"
+            app:srcCompat="@drawable/logo_udes_2" />
+
+        <LinearLayout
+            android:id="@+id/QuartUS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageView"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Q"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-60dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:shadowColor="@android:color/white"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="50"
+                android:text="Q"
+                android:textColor="@android:color/black"
+                android:textSize="85sp"
+                android:fontFamily="@font/kallisto_light"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/uart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-60dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:shadowColor="@android:color/white"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="50"
+                android:text="uart"
+                android:textColor="@android:color/black"
+                android:textSize="100sp"
+                android:fontFamily="@font/alio_pro_medium"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/US"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:shadowColor="@android:color/white"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="50"
+                android:text="US"
+                android:textColor="@color/vertUDeS"
+                android:textSize="80sp"
+                android:fontFamily="@font/merriweather_regular"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="26sp"
+            android:textStyle="normal"
+            android:text="Score" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/robot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="normal"
+                    android:text="Robot : " />
+
+                <TextView
+                    android:id="@+id/score_robot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="normal"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:paddingStart="30dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/humain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="normal"
+                    android:text="Humain : " />
+
+                <TextView
+                    android:id="@+id/score_humain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="normal"
+                    android:text="0" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/credits"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/regles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/black"
+                android:textAllCaps="false"
+                android:text="Règles du jeu" />
+
+            <Button
+                android:id="@+id/jouer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/black"
+                android:textAllCaps="false"
+                android:text="Jouer" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/credits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="normal"
+            android:text="Projet réalisé par l'équipe P14"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
