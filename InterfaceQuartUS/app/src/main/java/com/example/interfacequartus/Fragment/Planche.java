@@ -1,75 +1,204 @@
 package com.example.interfacequartus.Fragment;
 
+import static com.example.interfacequartus.Activity.Accueil.activitePrecedente;
+import static com.example.interfacequartus.Activity.Accueil.bluetooth;
+import static com.example.interfacequartus.Model.Quarto.ERREUR;
+import static com.example.interfacequartus.Model.Quarto.ERREUR_SELECTION;
+import static com.example.interfacequartus.Model.Quarto.OK;
+import static com.example.interfacequartus.Model.Quarto.PLANCHE;
+import static com.example.interfacequartus.Model.Quarto.VICTOIRE;
+
+import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.interfacequartus.databinding.FragmentPlancheBinding;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Planche#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
+import com.example.interfacequartus.Activity.Accueil;
+import com.example.interfacequartus.Activity.Partie;
+import com.example.interfacequartus.Activity.Regles;
+import com.example.interfacequartus.Model.Case;
+import com.example.interfacequartus.Model.Joueur;
+import com.example.interfacequartus.R;
+import com.example.interfacequartus.RelativeLayoutCarrePortrait;
+
 public class Planche extends Fragment
 {
-    FragmentPlancheBinding binding;
+    Partie parent;
+    ImageView[][] imagePlanche = new ImageView[4][4];
 
     //TODO toute la mécanique du plateau
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Quarto.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Planche newInstance(String param1, String param2)
-    {
-        Planche fragment = new Planche();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     public Planche()
     {
-        // Required empty public constructor
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        binding = FragmentPlancheBinding.inflate(inflater, container, false);
+        View view = inflater.inflate(R.layout.fragment_planche, container, false);
 
-        //binding.
+        parent = (Partie) requireActivity();
 
-        return binding.getRoot();
+        parent.outils.setOnMenuItemClickListener(item ->
+        {
+            switch (item.getItemId())
+            {
+                case R.id.aide:
+
+                    for(int r = 0 ; r < 4 ; r++)
+                        for(int c = 0 ; c < 4 ; c++)
+                            //TODO suggestion poser
+                            /*if(parent.getPartie().poserPieceEstSuggestion(r, c) && isVisible())
+                                setSuggestion(r, c);*/
+                    break;
+                case R.id.regles:
+                    startActivity(new Intent(requireActivity(), Regles.class));
+                    break;
+                default:
+                    break;
+            }
+
+            return true;
+        });
+
+        for(int r = 0 ; r < 4 ; r++)
+        {
+            for (int c = 0; c < 4; c++)
+            {
+                RelativeLayoutCarrePortrait casePlanche = view.findViewById(getResources().getIdentifier("c" + r + c, "id", getActivity().getPackageName()));
+                imagePlanche[r][c] = view.findViewById(getResources().getIdentifier("i" + r + c, "id", getActivity().getPackageName()));
+                TextView textCase = view.findViewById(getResources().getIdentifier("t" + r + c, "id", getActivity().getPackageName()));
+
+                Case t_case = parent.getPartie().getCase(PLANCHE, r, c);
+                if(!t_case.estVide())
+                {
+                    imagePlanche[r][c].setColorFilter(ContextCompat.getColor(parent.getApplicationContext(), R.color.pieceCasePlanche), PorterDuff.Mode.SRC_OVER);
+                    //imagePlanche[r][c].setImageDrawable(t_case.getPiece().getDrawable());
+                    textCase.setText("T" + parent.getPartie().getCase(PLANCHE, r, c).getTour() + "\nJ" + parent.getPartie().getCase(PLANCHE, r, c).getJoueur());
+                }
+
+                int t_r = r;
+                int t_c = c;
+                casePlanche.setOnClickListener(view1 ->
+                {
+                    Toast message;
+                    switch(parent.getPartie().poseSelection(t_r, t_c))
+                    {
+                        case OK:
+                            imagePlanche[t_r][t_c].setColorFilter(ContextCompat.getColor(parent.getApplicationContext(), R.color.pieceCasePlanche), PorterDuff.Mode.SRC_OVER);
+                            //imagePlanche[t_r][t_c].setImageDrawable(parent.getPartie().getCase(PLANCHE, t_r, t_c).getPiece().getDrawable());
+                            textCase.setText("T" + parent.getPartie().getCase(PLANCHE, t_r, t_c).getTour() + "\nJ" + parent.getPartie().getCase(PLANCHE, t_r, t_c).getJoueur());
+
+                            //TODO Bluetooth
+                            if(parent.bluetoothActif())
+                            {
+                                parent.setBluetoothActif(bluetooth.envoieDonnees(parent.getIDplusplus(), 1, t_r, t_c, 0, parent.getPartie().getJoueurActif(), getFragmentManager()));
+                                if(!parent.bluetoothActif())
+                                {
+                                    message = Toast.makeText(getContext(),"ERREUR de transmission Bluetooth\nBluetooth désactivé!.", Toast.LENGTH_SHORT);
+                                    message.setGravity(Gravity.CENTER, 0, 0);
+                                    message.show();
+                                }
+                            }
+                            break;
+                        case VICTOIRE:
+                            imagePlanche[t_r][t_c].setColorFilter(ContextCompat.getColor(parent.getApplicationContext(), R.color.pieceCasePlanche), PorterDuff.Mode.SRC_OVER);
+                            //imageCase.setImageDrawable(partie.getCase(PLANCHE, t_r, t_c).getPiece().getDrawable());
+                            textCase.setText("T" + parent.getPartie().getCase(PLANCHE, t_r, t_c).getTour() + "\nJ" + parent.getPartie().getCase(PLANCHE, t_r, t_c).getJoueur());
+
+                            //TODO Bluetooth
+                            if(parent.bluetoothActif())
+                            {
+                                parent.setBluetoothActif(bluetooth.envoieDonnees(parent.getIDplusplus(), 1, t_r, t_c, 1, parent.getPartie().getJoueurActif(), getFragmentManager()));
+                                if(!parent.bluetoothActif())
+                                {
+                                    message = Toast.makeText(getContext(),"ERREUR de transmission Bluetooth\nBluetooth désactivé!.", Toast.LENGTH_SHORT);
+                                    message.setGravity(Gravity.CENTER, 0, 0);
+                                    message.show();
+                                }
+
+                                /*if(trueTODO si signal recu du bluetooth)
+                                {
+                                    //TODO : envoie du signal du joueur vainceur
+                                    if(parent.getPartie().getJoueur1().getTour() == Joueur.Tour.Actif)
+                                    {
+                                        bluetooth.envoieDonnees("#=1"); //Victoire joueur 1
+                                    }
+                                    else
+                                    {
+                                        if(parent.getPartie().getNiveau() > 0)
+                                        {
+                                            bluetooth.envoieDonnees("#=0"); //Victoire de QuartUS
+                                        }
+                                        else
+                                            bluetooth.envoieDonnees("#=2"); //Victoire joueur 2
+                                    }
+                                }*/
+                            }
+
+                            if(parent.getPartie().getJoueur1().getTour() == Joueur.Tour.Actif)
+                            {
+                                if(parent.getPartie().getNiveau() > 0)
+                                    Accueil.score[0]++;
+
+                                message = Toast.makeText(getContext(), "Victoire du joueur 1", Toast.LENGTH_SHORT);
+                            }
+                            else
+                            {
+                                if(parent.getPartie().getNiveau() > 0)
+                                {
+                                    Accueil.score[1]++;
+                                    message = Toast.makeText(getContext(), "Victoire de QuartUS!!!", Toast.LENGTH_SHORT);
+                                }
+                                else
+                                    message = Toast.makeText(getContext(), "Victoire du joueur 2", Toast.LENGTH_SHORT);
+                            }
+                            message.setGravity(Gravity.CENTER, 0, 0);
+                            message.show();
+
+                            activitePrecedente = "Partie";
+
+                            getActivity().finish();
+                            break;
+                        case ERREUR:
+                            message = Toast.makeText(getContext(),"Case pleine...", Toast.LENGTH_SHORT);
+                            message.setGravity(Gravity.CENTER, 0, 0);
+                            message.show();
+                            break;
+                        case ERREUR_SELECTION:
+                            message = Toast.makeText(getContext(),"Aucune pièce sélectionnée...", Toast.LENGTH_SHORT);
+                            message.setGravity(Gravity.CENTER, 0, 0);
+                            message.show();
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            }
+        }
+
+        return view;
+    }
+
+    //Méthodes
+    public void setSuggestion(int r, int c)
+    {
+        imagePlanche[r][c].setColorFilter(ContextCompat.getColor(getContext(), R.color.pieceCasePlanche), PorterDuff.Mode.SRC_OVER);
     }
 }

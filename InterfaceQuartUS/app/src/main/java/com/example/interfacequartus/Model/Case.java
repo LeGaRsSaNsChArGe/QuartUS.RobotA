@@ -1,12 +1,11 @@
 package com.example.interfacequartus.Model;
 
-import android.graphics.drawable.Drawable;
-
 public class Case
 {
     //Variables
     Piece piece;
-    int[] coords = new int[2]; // (x, y)
+    int tour;
+    int joueur;
 
     //Constructeurs
     public Case()
@@ -19,22 +18,30 @@ public class Case
     }
 
     //Getteurs & setteurs
-    public int[] getCoords()
-    {
-        return coords;
-    }
     public Piece getPiece()
     {
         return piece;
     }
-
-    public void setCoords(int[] coords)
+    public int getTour()
     {
-        this.coords = coords;
+        return tour;
     }
+    public int getJoueur()
+    {
+        return joueur;
+    }
+
     public void setPiece(Piece piece)
     {
         this.piece = piece;
+    }
+    public void setTour(int tour)
+    {
+        this.tour = tour;
+    }
+    public void setJoueur(int joueur)
+    {
+        this.joueur = joueur;
     }
 
     //Méthodes

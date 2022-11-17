@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.InterfaceQuartUS" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.InterfaceQuartUS" parent="Theme.MaterialComponents.Light.NoActionBar">
     <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -21,5 +21,9 @@
         <item name="colorSwitchThumbNormal">#f1f1f1</item>
         <!-- inactive track color (30% transparency) -->
         <item name="android:colorForeground">@color/rouge</item>
+    </style>
+
+    <style name="chargementCirculaire" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:indeterminateDrawable">@drawable/style_chargement</item>
     </style>
 </resources>

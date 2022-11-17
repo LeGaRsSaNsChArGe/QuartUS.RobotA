@@ -21,4 +21,6 @@
     <color name="piece1">@color/vertUDeS</color>
     <color name="piece2">@color/jauneUDeS</color>
     <color name="contourPiece">#aa000000</color>
+
+    <color name="pieceCasePlanche">#69000000</color>
 </resources>

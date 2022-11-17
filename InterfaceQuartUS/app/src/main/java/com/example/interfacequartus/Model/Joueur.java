@@ -6,9 +6,9 @@ public class Joueur
     public enum Tour{Actif, Passif} private Tour tour;
 
     //Constructeurs
-    public Joueur()
+    public Joueur(Tour tour)
     {
-        this.tour = Tour.Passif;
+        this.tour = tour;
     }
 
     //Getteurs & setteurs

@@ -1,6 +1,22 @@
 <resources>
     <string name="app_name">Interface QuartUS</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="niveau_du_robot">
+        <item>Humain contre Humain</item>
+        <item>1 (???)</item>
+        <item>2 (???)</item>
+        <item>3 (???)</item>
+    </string-array>
+
+    <string-array name="mode_de_jeu">
+        <item>Débutant (Simple)</item>
+        <item>Amateur (Classique)</item>
+        <item>Expert (Complexe)</item>
+    </string-array>
+</resources>
+
+<!--<resources>
+    <string name="app_name">Interface QuartUS</string>
 
     <string-array name="niveau_du_robot">
         <item>Human vs. Human</item>
@@ -14,4 +30,4 @@
         <item>Amateur (Classic)</item>
         <item>Expert (Complex)</item>
     </string-array>
-</resources>
+</resources>-->

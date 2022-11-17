@@ -4,152 +4,157 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
     android:layout_gravity="center"
-    tools:context=".Fragment.Pieces">
+    android:layout_margin="6dp"
+    tools:context=".Fragment.Planche"
+    android:padding="6dp"
+    android:background="@drawable/planche_contour">
 
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c00"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="1"
-        app:layout_column="1" />
+        app:layout_column="1"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c01"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="1"
-        app:layout_column="2" />
+        app:layout_column="2"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c02"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="1"
-        app:layout_column="3" />
+        app:layout_column="3"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c03"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="1"
-        app:layout_column="4" />
+        app:layout_column="4"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c10"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="2"
-        app:layout_column="1" />
+        app:layout_column="1"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c11"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="2"
-        app:layout_column="2" />
+        app:layout_column="2"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c12"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="2"
-        app:layout_column="3" />
+        app:layout_column="3"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c13"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="2"
-        app:layout_column="4" />
+        app:layout_column="4"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c20"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="3"
-        app:layout_column="1" />
+        app:layout_column="1"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c21"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="3"
-        app:layout_column="2" />
+        app:layout_column="2"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c22"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="3"
-        app:layout_column="3" />
+        app:layout_column="3"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c23"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="3"
-        app:layout_column="4" />
+        app:layout_column="4"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c30"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="4"
-        app:layout_column="1" />
+        app:layout_column="1"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c31"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="4"
-        app:layout_column="2" />
+        app:layout_column="2"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c32"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="4"
-        app:layout_column="3" />
+        app:layout_column="3"
+        android:src="@drawable/planche_case" />
     <com.example.interfacequartus.ImageViewCarrePortrait
         android:id="@+id/c33"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="6dp"
+        android:padding="4dp"
         app:layout_columnWeight="1"
-        app:layout_rowWeight="1"
         app:layout_row="4"
-        app:layout_column="4" />
+        app:layout_column="4"
+        android:src="@drawable/planche_case" />
 </androidx.gridlayout.widget.GridLayout>
+
+
+

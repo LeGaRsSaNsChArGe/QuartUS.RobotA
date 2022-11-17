@@ -137,17 +137,17 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/robot"
+                    android:id="@+id/humain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="normal"
-                    android:text="Robot : " />
+                    android:text="Humain : " />
 
                 <TextView
-                    android:id="@+id/score_robot"
+                    android:id="@+id/score_humain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -165,17 +165,17 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/humain"
+                    android:id="@+id/robot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="normal"
-                    android:text="Humain : " />
+                    android:text="QuartUS : " />
 
                 <TextView
-                    android:id="@+id/score_humain"
+                    android:id="@+id/score_robot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

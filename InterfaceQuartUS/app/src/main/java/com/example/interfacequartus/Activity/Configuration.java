@@ -1,18 +1,17 @@
 package com.example.interfacequartus.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
+import static com.example.interfacequartus.Activity.Accueil.activitePrecedente;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.interfacequartus.R;
-import com.example.interfacequartus.databinding.ActivityAccueilBinding;
 import com.example.interfacequartus.databinding.ActivityConfigurationBinding;
 
 public class Configuration extends AppCompatActivity
@@ -30,7 +29,7 @@ public class Configuration extends AppCompatActivity
         binding.listeModes.setAdapter(new ArrayAdapter(this, R.layout.item_liste_defilante, getResources().getStringArray(R.array.mode_de_jeu)));
 
         Intent intentConfiguration = getIntent();
-        boolean bluetooth = intentConfiguration.getBooleanExtra("bluetooth", false);
+        boolean bluetooth = intentConfiguration.getBooleanExtra("bluetooth", true);
 
         if(!bluetooth)
             binding.listeNiveaux.setText(binding.listeNiveaux.getAdapter().getItem(0).toString());
@@ -51,7 +50,7 @@ public class Configuration extends AppCompatActivity
             {
                 niveau = -1;
 
-                Toast message = Toast.makeText(getApplicationContext(),"Choisir le niveau du robot", Toast.LENGTH_LONG);
+                Toast message = Toast.makeText(getApplicationContext(),"Choisir le niveau du robot", Toast.LENGTH_SHORT);
                 message.setGravity(Gravity.CENTER, 0, 0);
                 message.show();
             }
@@ -66,7 +65,7 @@ public class Configuration extends AppCompatActivity
             {
                 mode = -1;
 
-                Toast message = Toast.makeText(getApplicationContext(),"Choisir le mode de jeu", Toast.LENGTH_LONG);
+                Toast message = Toast.makeText(getApplicationContext(),"Choisir le mode de jeu", Toast.LENGTH_SHORT);
                 message.setGravity(Gravity.CENTER, 0, 0);
                 message.show();
             }
@@ -81,15 +80,28 @@ public class Configuration extends AppCompatActivity
                 startActivity(intentPartie);
             }
         });
+    }
 
+    @Override
+    protected void onResume()
+    {
+        if(activitePrecedente.equals("Partie"))
+            this.finish();
+        super.onResume();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        //super.onBackPressed();
     }
 
     @Override
     public boolean onKeyDown(int key_code, KeyEvent key_event) {
-        if (key_code== KeyEvent.KEYCODE_BACK) {
+        /*if (key_code== KeyEvent.KEYCODE_BACK) {
             super.onKeyDown(key_code, key_event);
             return true;
-        }
+        }*/
         return false;
     }
 }

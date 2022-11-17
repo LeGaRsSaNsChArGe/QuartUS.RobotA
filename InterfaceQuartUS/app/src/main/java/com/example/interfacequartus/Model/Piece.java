@@ -67,4 +67,58 @@ public class Piece
     {
         this.drawable = drawable;
     }
+
+    //Méthodes
+    public String getCaracteristiques()
+    {
+        String caracteristiques = "";
+        switch (this.couleur)
+        {
+            case Blanche:
+                caracteristiques += "JAUNE";
+                break;
+            case Noire:
+                caracteristiques += "VERT";
+                break;
+            default:
+                break;
+        }
+        caracteristiques += "/";
+        switch (this.forme)
+        {
+            case Carre:
+                caracteristiques += "CARRÉE";
+                break;
+            case Ronde:
+                caracteristiques += "RONDE";
+                break;
+            default:
+                break;
+        }
+        caracteristiques += "/";
+        switch (this.taille)
+        {
+            case Haute:
+                caracteristiques += "HAUTE";
+                break;
+            case Basse:
+                caracteristiques += "BASSE";
+                break;
+            default:
+                break;
+        }
+        caracteristiques += "/";
+        switch (this.remplissage)
+        {
+            case Pleine:
+                caracteristiques += "PLEINE";
+                break;
+            case Creuse:
+                caracteristiques += "CREUSE";
+                break;
+            default:
+                break;
+        }
+        return caracteristiques;
+    }
 }
