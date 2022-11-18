@@ -1,6 +1,10 @@
 package com.example.interfacequartus.Fragment;
 
+import static com.example.interfacequartus.Activity.Partie.robotPret;
+
+
 import static com.example.interfacequartus.Activity.Accueil.bluetooth;
+import static com.example.interfacequartus.Model.Quarto.ERREUR_ROBOT_NON_PRET;
 import static com.example.interfacequartus.Model.Quarto.ERREUR_SELECTION;
 import static com.example.interfacequartus.Model.Quarto.ERREUR_VIDE;
 import static com.example.interfacequartus.Model.Quarto.OK;
@@ -101,6 +105,7 @@ public class Pieces extends Fragment
                             //TODO Bluetooth
                             if(parent.bluetoothActif())
                             {
+                                robotPret = false;
                                 parent.setBluetoothActif(bluetooth.envoieDonnees(parent.getIDplusplus(), 0, t_r, t_c, 0, parent.getPartie().getJoueurActif(), getFragmentManager()));
                                 if(!parent.bluetoothActif())
                                 {
@@ -117,6 +122,11 @@ public class Pieces extends Fragment
                             break;
                         case ERREUR_SELECTION:
                             message = Toast.makeText(getContext(),"Pièce déjà sélectionnée...", Toast.LENGTH_SHORT);
+                            message.setGravity(Gravity.CENTER, 0, 0);
+                            message.show();
+                            break;
+                        case ERREUR_ROBOT_NON_PRET:
+                            message = Toast.makeText(getContext(),"Robot en mouvement, attendez...", Toast.LENGTH_SHORT);
                             message.setGravity(Gravity.CENTER, 0, 0);
                             message.show();
                             break;

@@ -21,6 +21,7 @@ public class Partie extends AppCompatActivity
     //Variables
     public ActivityPartieBinding binding;
     public Toolbar outils;
+    public static boolean robotPret;
 
     Planche fragmentPlanche;
     Pieces fragmentPieces;
@@ -47,6 +48,7 @@ public class Partie extends AppCompatActivity
 
         fragmentPlanche = new Planche();
         fragmentPieces = new Pieces();
+        robotPret = true;
         remplaceFragment(fragmentPlanche);
 
         binding.navigation.setOnItemSelectedListener(item ->

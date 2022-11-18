@@ -3,6 +3,7 @@ package com.example.interfacequartus.Model;
 import static com.example.interfacequartus.Activity.Accueil.DEBUG;
 import static com.example.interfacequartus.Activity.Accueil.ERREUR;
 import static com.example.interfacequartus.Activity.Accueil.bluetooth;
+import com.example.interfacequartus.Model.TimeoutBT;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -198,11 +199,16 @@ public class PeripheriqueBT
         try
         {
             outStream.write(bytesBuffer);
-            if(recoieConfirmation(ID, bytesBuffer, fragmentManager))
-                return recoieFinEtape(ID);
-            else
+
+            if(recoieConfirmation(ID, bytesBuffer, fragmentManager)){
+                new TimeoutBT(inStream,ID).execute();
+                return true;
+            }else{
                 return false;
-        }catch(IOException e)
+            }
+        }
+
+        catch(IOException e)
         {
             Log.e(Accueil.ERREUR,"Erreur pendant l'écriture: " + e.getMessage());
         }
@@ -218,9 +224,7 @@ public class PeripheriqueBT
 
             int read = -1;
 
-            //Transition transition = new Transition();
-            //transition.setCancelable(false);
-            //transition.show(fragmentManager, "Transition");
+
 
             while(((read = inStream.read()) &63) != ID && compteur != 10)
             {
@@ -250,33 +254,4 @@ public class PeripheriqueBT
         return false;
     }
 
-    private boolean recoieFinEtape(byte ID)
-    {
-        try
-        {
-            int compteur = 0;
-            int read = -1;
-
-            while(((read = inStream.read()) &32) != ID && (read &128) != 128 && compteur != TEMPS_DEPLACEMENT)
-            {
-                try
-                {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-
-                compteur++;
-            }
-
-            return compteur != TEMPS_DEPLACEMENT;
-
-        }catch(IOException e)
-        {
-            Log.e(Accueil.ERREUR,"Erreur pendant la lecture");
-        }
-
-        return false;
-    }
 }

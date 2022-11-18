@@ -1,6 +1,7 @@
 package com.example.interfacequartus.Model;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -9,6 +10,9 @@ import com.example.interfacequartus.Model.Piece.Couleur;
 import com.example.interfacequartus.Model.Piece.Forme;
 import com.example.interfacequartus.Model.Piece.Taille;
 import com.example.interfacequartus.Model.Piece.Remplissage;
+
+import static com.example.interfacequartus.Activity.Accueil.DEBUG;
+import static com.example.interfacequartus.Activity.Partie.robotPret;
 
 public class Quarto
 {
@@ -19,6 +23,7 @@ public class Quarto
     public static final int ERREUR = 1;
     public static final int ERREUR_SELECTION = 2;
     public static final int ERREUR_VIDE = 3;
+    public static final int ERREUR_ROBOT_NON_PRET = 4;
 
     public static final int HUMAIN = 0;
 
@@ -182,10 +187,15 @@ public class Quarto
     //Méthodes
     public int prendreSelection(int x, int y)
     {
+        if(robotPret == false)
+            return ERREUR_ROBOT_NON_PRET;
         if(this.pieces[x][y].getPiece() == null)
             return ERREUR_VIDE;
         else if(this.selection != null)
             return ERREUR_SELECTION;
+
+
+
 
         this.selection = this.pieces[x][y].getPiece();
         this.pieces[x][y] = new Case();
@@ -206,10 +216,14 @@ public class Quarto
     }
     public int poseSelection(int x, int y)
     {
+        Log.d(DEBUG, String.valueOf(robotPret));
+        if(robotPret == false)
+            return ERREUR_ROBOT_NON_PRET;
         if(this.planche[x][y].getPiece() != null)
             return ERREUR;
         else if(this.selection == null)
             return ERREUR_SELECTION;
+
 
         this.planche[x][y] = new Case(this.selection);
         this.selection = null;

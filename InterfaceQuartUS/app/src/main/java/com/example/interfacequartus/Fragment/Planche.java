@@ -2,6 +2,7 @@ package com.example.interfacequartus.Fragment;
 
 import static com.example.interfacequartus.Activity.Accueil.activitePrecedente;
 import static com.example.interfacequartus.Activity.Accueil.bluetooth;
+import static com.example.interfacequartus.Activity.Partie.robotPret;
 import static com.example.interfacequartus.Model.Quarto.ERREUR;
 import static com.example.interfacequartus.Model.Quarto.ERREUR_SELECTION;
 import static com.example.interfacequartus.Model.Quarto.OK;
@@ -108,6 +109,7 @@ public class Planche extends Fragment
                             //TODO Bluetooth
                             if(parent.bluetoothActif())
                             {
+                                robotPret = false;
                                 parent.setBluetoothActif(bluetooth.envoieDonnees(parent.getIDplusplus(), 1, t_r, t_c, 0, parent.getPartie().getJoueurActif(), getFragmentManager()));
                                 if(!parent.bluetoothActif())
                                 {
