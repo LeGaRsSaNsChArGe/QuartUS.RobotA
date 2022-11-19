@@ -21,12 +21,10 @@ public class Partie extends AppCompatActivity
     //Variables
     public ActivityPartieBinding binding;
     public Toolbar outils;
-    public static boolean robotPret;
 
     Planche fragmentPlanche;
     Pieces fragmentPieces;
 
-    boolean bluetoothActif;
     Quarto partie;
     byte ID;
 
@@ -38,7 +36,6 @@ public class Partie extends AppCompatActivity
         setContentView(binding.getRoot());
 
         Intent intentPartie = getIntent();
-        bluetoothActif = intentPartie.getBooleanExtra("bluetooth", true);
         int niveau = intentPartie.getIntExtra("niveau", -1);
         int mode = intentPartie.getIntExtra("mode", -1);
 
@@ -48,7 +45,6 @@ public class Partie extends AppCompatActivity
 
         fragmentPlanche = new Planche();
         fragmentPieces = new Pieces();
-        robotPret = true;
         remplaceFragment(fragmentPlanche);
 
         binding.navigation.setOnItemSelectedListener(item ->
@@ -67,33 +63,6 @@ public class Partie extends AppCompatActivity
 
             return true;
         });
-
-        /*outils.setOnMenuItemClickListener(item ->
-        {
-            switch (item.getItemId())
-            {
-                case R.id.aide:
-
-                    for(int r = 0 ; r < 4 ; r++)
-                    {
-                        for(int c = 0 ; c < 4 ; c++)
-                        {
-                            if(partie.getSelection() == null && partie.suggestion(partie.getCase(PLANCHE, r, c).getPiece()) && fragmentPieces.isVisible())
-                                fragmentPieces.setSuggestion(r, c);
-                            else if(partie.getSelection() != null && partie.suggestion(r, c) && fragmentPlanche.isVisible())
-                                fragmentPlanche.setSuggestion(r, c);
-                        }
-                    }
-                    break;
-                case R.id.regles:
-                    startActivity(new Intent(Partie.this, Regles.class));
-                    break;
-                default:
-                    break;
-            }
-
-            return true;
-        });*/
     }
 
     private void remplaceFragment(Fragment fragment)
@@ -132,21 +101,9 @@ public class Partie extends AppCompatActivity
     {
         return ID;
     }
-    public boolean bluetoothActif()
-    {
-        return bluetoothActif;
-    }
 
     public void setPartie(Quarto partie)
     {
         this.partie = partie;
     }
-    public void setBluetoothActif(boolean bluetoothActif)
-    {
-        this.bluetoothActif = bluetoothActif;
-    }
-    /*public void IDplusplus()
-    {
-        this.ID++;
-    }*/
 }

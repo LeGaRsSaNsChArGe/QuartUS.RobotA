@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.example.interfacequartus.Model.PeripheriqueBT;
@@ -27,23 +26,28 @@ public class Accueil extends AppCompatActivity {
     ActivityAccueilBinding binding;
 
     public static String activitePrecedente;
-    public static int[] score = new int[2]; //0 = Humain, 1 = Robot
+    public static int[] score = new int[2]; //0 = Humain, 1 = QuartUS
 
     public static PeripheriqueBT bluetooth;
 
-    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Log.e("Activity result","OK");
-                    // There are no request codes
-                    Intent data = result.getData();
-                }
-            });
+    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->
+    {
+        if(result.getResultCode() == Activity.RESULT_OK)
+        {
+            Log.e("Activity result","OK");
+            // There are no request codes
+            Intent data = result.getData();
+
+            if(bluetooth.connexionBT())
+            {
+                binding.iconBluetooth.setBackground(AppCompatResources.getDrawable(binding.iconBluetooth.getContext(), R.drawable.ic_baseline_bluetooth_connected_24));
+                binding.switchBluetooth.setChecked(true);
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         binding = ActivityAccueilBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -57,25 +61,9 @@ public class Accueil extends AppCompatActivity {
 
         verificationBT();
         binding.switchBluetooth.setOnClickListener(view -> verificationBT());
-
-        binding.regles.setOnClickListener(view ->
-        {
-            startActivity(new Intent(Accueil.this, Regles.class));
-        });
-
-        binding.jouer.setOnClickListener(view ->
-        {
-            Intent intentConfiguration = new Intent(getApplicationContext(), Configuration.class);
-
-            intentConfiguration.putExtra("bluetooth", binding.switchBluetooth.isChecked() && bluetooth.connexionEtablie());
-
-            startActivity(intentConfiguration);
-        });
-
-        binding.credits.setOnClickListener(view ->
-        {
-            startActivity(new Intent(Accueil.this, Credits.class));
-        });
+        binding.regles.setOnClickListener(view -> startActivity(new Intent(Accueil.this, Regles.class)));
+        binding.jouer.setOnClickListener(view -> startActivity(new Intent(getApplicationContext(), Configuration.class)));
+        //binding.credits.setOnClickListener(view -> startActivity(new Intent(Accueil.this, Credits.class)));
     }
 
     @Override
@@ -91,6 +79,31 @@ public class Accueil extends AppCompatActivity {
     //Méthodes
     private void verificationBT()
     {
+        if(!binding.switchBluetooth.isChecked() || bluetooth.getAdapteurBT() == null || !bluetooth.verificationBluetooth())
+        {
+            bluetooth.setActif(false);
+            binding.iconBluetooth.setBackground(AppCompatResources.getDrawable(binding.iconBluetooth.getContext(), R.drawable.ic_baseline_bluetooth_disabled_24));
+            binding.switchBluetooth.setChecked(false);
+
+            if(bluetooth.getAdapteurBT() == null)
+            {
+                binding.switchBluetooth.setClickable(false);
+
+                Toast message = Toast.makeText(getApplicationContext(),"Bluetooth non supporté", Toast.LENGTH_SHORT);
+                message.setGravity(Gravity.CENTER, 0, 0);
+                message.show();
+            }
+            else if(!bluetooth.verificationBluetooth())
+                activityResultLauncher.launch(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE));
+        }
+        else if(bluetooth.connexionBT())
+            binding.iconBluetooth.setBackground(AppCompatResources.getDrawable(binding.iconBluetooth.getContext(), R.drawable.ic_baseline_bluetooth_connected_24));
+        else
+            binding.iconBluetooth.setBackground(AppCompatResources.getDrawable(binding.iconBluetooth.getContext(), R.drawable.ic_baseline_bluetooth_24));
+    }
+
+    /*private void verificationBT()
+    {
         if(binding.switchBluetooth.isChecked())
         {
             binding.iconBluetooth.setBackground(AppCompatResources.getDrawable(binding.iconBluetooth.getContext(), R.drawable.ic_baseline_bluetooth_24));
@@ -103,12 +116,22 @@ public class Accueil extends AppCompatActivity {
             }
 
             if(!bluetooth.verificationBluetooth())
+            {
                 activityResultLauncher.launch(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE));
 
-            if(bluetooth.connexionBT())
+                if(!bluetooth.verificationBluetooth())
+                {
+                    activityResultLauncher.launch(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE));
+                    // TODO : verificationBT();
+                }
+            }
+            else if(bluetooth.connexionBT())
                 binding.iconBluetooth.setBackground(AppCompatResources.getDrawable(binding.iconBluetooth.getContext(), R.drawable.ic_baseline_bluetooth_connected_24));
         }
         else
+        {
+            bluetooth.setActif(false);
             binding.iconBluetooth.setBackground(AppCompatResources.getDrawable(binding.iconBluetooth.getContext(), R.drawable.ic_baseline_bluetooth_disabled_24));
-    }
+        }
+    }*/
 }

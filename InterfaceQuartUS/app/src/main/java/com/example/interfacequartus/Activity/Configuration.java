@@ -1,6 +1,7 @@
 package com.example.interfacequartus.Activity;
 
 import static com.example.interfacequartus.Activity.Accueil.activitePrecedente;
+import static com.example.interfacequartus.Activity.Accueil.bluetooth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,10 +29,7 @@ public class Configuration extends AppCompatActivity
         binding.listeNiveaux.setAdapter(new ArrayAdapter(this, R.layout.item_liste_defilante, getResources().getStringArray(R.array.niveau_du_robot)));
         binding.listeModes.setAdapter(new ArrayAdapter(this, R.layout.item_liste_defilante, getResources().getStringArray(R.array.mode_de_jeu)));
 
-        Intent intentConfiguration = getIntent();
-        boolean bluetooth = intentConfiguration.getBooleanExtra("bluetooth", true);
-
-        if(!bluetooth)
+        if(!bluetooth.estActif())
             binding.listeNiveaux.setText(binding.listeNiveaux.getAdapter().getItem(0).toString());
 
         binding.boutonJeu.setOnClickListener(view ->
@@ -73,7 +71,6 @@ public class Configuration extends AppCompatActivity
             if(niveau != -1 && mode != -1)
             {
                 Intent intentPartie = new Intent(getApplicationContext(), Partie.class);
-                intentPartie.putExtra("bluetooth", bluetooth);
                 intentPartie.putExtra("niveau", niveau);
                 intentPartie.putExtra("mode", mode);
 

@@ -3,9 +3,9 @@
 
     <string-array name="niveau_du_robot">
         <item>Humain contre Humain</item>
-        <item>1 (???)</item>
+        <!--<item>1 (???)</item>
         <item>2 (???)</item>
-        <item>3 (???)</item>
+        <item>3 (???)</item>-->
     </string-array>
 
     <string-array name="mode_de_jeu">

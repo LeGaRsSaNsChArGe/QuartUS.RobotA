@@ -1,9 +1,6 @@
 package com.example.interfacequartus.Model;
 
 import static com.example.interfacequartus.Activity.Accueil.DEBUG;
-import static com.example.interfacequartus.Activity.Accueil.ERREUR;
-import static com.example.interfacequartus.Activity.Accueil.bluetooth;
-import com.example.interfacequartus.Model.TimeoutBT;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -16,7 +13,6 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.interfacequartus.Activity.Accueil;
-import com.example.interfacequartus.Fragment.Transition;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,11 +23,6 @@ import java.util.concurrent.TimeUnit;
 public class PeripheriqueBT
 {
     //Constantes
-    //public static final int NULL = 0;
-    //public static final int TRUE = 1;
-    //public static final int FALSE = -1;
-    public static final int TEMPS_DEPLACEMENT = 120;
-
     public static final int REQUEST_ENABLE_BT = 1;
     public static final UUID MON_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");//Universel UUID
 
@@ -41,11 +32,14 @@ public class PeripheriqueBT
     OutputStream outStream;
     InputStream inStream;
 
-    String addresseMac;// Ex: "20:16:09:12:32:93"
+    String addresseMac;
 
     Accueil accueil;
     Context context;
+    boolean actif;
     boolean connexionEtablie;
+
+    ReceptionFinEtapeBT receptionFinEtapeBT;
 
     //Constructeurs
     public PeripheriqueBT()
@@ -59,9 +53,11 @@ public class PeripheriqueBT
 
         this.accueil = null;
         this.context = null;
+        this.actif = false;
         this.connexionEtablie = false;
-    }
 
+        this.receptionFinEtapeBT = null;
+    }
     public PeripheriqueBT(Accueil accueil, Context context, String adresseMac)
     {
         this.adapteurBT = BluetoothAdapter.getDefaultAdapter();
@@ -76,52 +72,66 @@ public class PeripheriqueBT
 
         this.accueil = accueil;
         this.context = context;
+        this.actif = false;
         this.connexionEtablie = false;
+
+        this.receptionFinEtapeBT = new ReceptionFinEtapeBT();
     }
 
     //Getteurs & setteurs
     public BluetoothAdapter getAdapteurBT() {
         return adapteurBT;
     }
-
     public BluetoothSocket getPriseBT() {
         return priseBT;
     }
-
     public OutputStream getOutStream() {
         return outStream;
     }
-
     public String getAddresseMac() {
         return addresseMac;
     }
-
     public Context getContext() {
         return context;
     }
-
+    public ReceptionFinEtapeBT getReceptionFinEtapeBT()
+    {
+        return receptionFinEtapeBT;
+    }
+    public boolean estConfirmationFinEtape()
+    {
+        return receptionFinEtapeBT.estConfirmation();
+    }
     public boolean connexionEtablie() {
         return connexionEtablie;
+    }
+    public boolean estActif()
+    {
+        return actif;
     }
 
     public void setAdapteurBT(BluetoothAdapter adapteurBT) {
         this.adapteurBT = adapteurBT;
     }
-
     public void setPriseBT(BluetoothSocket priseBT) {
         this.priseBT = priseBT;
     }
-
     public void setOutStream(OutputStream outStream) {
         this.outStream = outStream;
     }
-
     public void setAddresseMac(String addresseMac) {
         this.addresseMac = addresseMac;
     }
-
     public void setContext(Context context) {
         this.context = context;
+    }
+    public void setConnexionEtablie(boolean connexionEtablie)
+    {
+        this.connexionEtablie = connexionEtablie;
+    }
+    public void setActif(boolean actif)
+    {
+        this.actif = actif;
     }
 
     //Méthodes
@@ -135,7 +145,8 @@ public class PeripheriqueBT
             return false;
     }
 
-    public boolean connexionBT() {
+    public boolean connexionBT()
+    {
         BluetoothDevice device = adapteurBT.getRemoteDevice(addresseMac);
 
         try {
@@ -187,6 +198,8 @@ public class PeripheriqueBT
             return false;
         }
 
+        this.actif = true;
+        this.receptionFinEtapeBT.setConfirmation(true);
         this.connexionEtablie = true;
         return true;
     }
@@ -200,14 +213,16 @@ public class PeripheriqueBT
         {
             outStream.write(bytesBuffer);
 
-            if(recoieConfirmation(ID, bytesBuffer, fragmentManager)){
-                new TimeoutBT(inStream,ID).execute();
+            receptionFinEtapeBT = new ReceptionFinEtapeBT(inStream, ID, this.context, fragmentManager);
+            if(recoieConfirmation(ID))
+            {
+                receptionFinEtapeBT.execute();
                 return true;
-            }else{
+            }else
+            {
                 return false;
             }
         }
-
         catch(IOException e)
         {
             Log.e(Accueil.ERREUR,"Erreur pendant l'écriture: " + e.getMessage());
@@ -216,15 +231,12 @@ public class PeripheriqueBT
         return false;
     }
 
-    private boolean recoieConfirmation(byte ID, byte[] bytesBuffer, FragmentManager fragmentManager)
+    private boolean recoieConfirmation(byte ID)
     {
         try
         {
             int compteur = 0;
-
             int read = -1;
-
-
 
             while(((read = inStream.read()) &63) != ID && compteur != 10)
             {
@@ -237,13 +249,8 @@ public class PeripheriqueBT
                     e.printStackTrace();
                 }
 
-                //outStream.write(bytesBuffer);
-
                 compteur++;
             }
-
-            //transition.dismiss();
-
             return compteur != 10;
 
         }catch(IOException e)
@@ -253,5 +260,4 @@ public class PeripheriqueBT
 
         return false;
     }
-
 }

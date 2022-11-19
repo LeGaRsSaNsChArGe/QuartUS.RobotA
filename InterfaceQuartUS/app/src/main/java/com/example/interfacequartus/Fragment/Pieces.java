@@ -1,14 +1,12 @@
 package com.example.interfacequartus.Fragment;
 
-import static com.example.interfacequartus.Activity.Partie.robotPret;
-
-
 import static com.example.interfacequartus.Activity.Accueil.bluetooth;
-import static com.example.interfacequartus.Model.Quarto.ERREUR_ROBOT_NON_PRET;
+import static com.example.interfacequartus.Model.Quarto.ERREUR_CONFIRMATION;
 import static com.example.interfacequartus.Model.Quarto.ERREUR_SELECTION;
 import static com.example.interfacequartus.Model.Quarto.ERREUR_VIDE;
 import static com.example.interfacequartus.Model.Quarto.OK;
 import static com.example.interfacequartus.Model.Quarto.PIECES;
+import static com.example.interfacequartus.Model.Quarto.PRENDRE_PIECE;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -38,10 +36,7 @@ public class Pieces extends Fragment
     Partie parent;
     ImageViewCarrePortrait[][] imagePieces = new ImageViewCarrePortrait[4][4];
 
-    public Pieces()
-    {
-
-    }
+    public Pieces() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -92,7 +87,13 @@ public class Pieces extends Fragment
                 imagePieces[r][c].setOnClickListener(view1 ->
                 {
                     Toast message;
-                    switch(parent.getPartie().prendreSelection(t_r, t_c))
+                    int cas = ERREUR_CONFIRMATION;
+                    if(bluetooth.estConfirmationFinEtape() && bluetooth.estActif())
+                        cas = parent.getPartie().prendreSelection(t_r, t_c);
+                    else if(!bluetooth.estActif())
+                        cas = parent.getPartie().prendreSelection(t_r, t_c);
+
+                    switch(cas)
                     {
                         case OK:
                             for(int r1 = 0 ; r1 < 4 ; r1++)
@@ -102,14 +103,12 @@ public class Pieces extends Fragment
 
                             imagePieces[t_r][t_c].setImageResource(android.R.color.transparent);
 
-                            //TODO Bluetooth
-                            if(parent.bluetoothActif())
+                            if(bluetooth.estActif())
                             {
-                                robotPret = false;
-                                parent.setBluetoothActif(bluetooth.envoieDonnees(parent.getIDplusplus(), 0, t_r, t_c, 0, parent.getPartie().getJoueurActif(), getFragmentManager()));
-                                if(!parent.bluetoothActif())
+                                bluetooth.setActif(bluetooth.envoieDonnees(parent.getIDplusplus(), PRENDRE_PIECE, t_r, t_c, OK, parent.getPartie().getJoueurActif(), getFragmentManager()));
+                                if(!bluetooth.estActif())
                                 {
-                                    message = Toast.makeText(getContext(),"ERREUR de transmission Bluetooth\nBluetooth désactivé!.", Toast.LENGTH_SHORT);
+                                    message = Toast.makeText(getContext(),"ERREUR de transmission Bluetooth\nBluetooth désactivé!", Toast.LENGTH_SHORT);
                                     message.setGravity(Gravity.CENTER, 0, 0);
                                     message.show();
                                 }
@@ -125,8 +124,8 @@ public class Pieces extends Fragment
                             message.setGravity(Gravity.CENTER, 0, 0);
                             message.show();
                             break;
-                        case ERREUR_ROBOT_NON_PRET:
-                            message = Toast.makeText(getContext(),"Robot en mouvement, attendez...", Toast.LENGTH_SHORT);
+                        case ERREUR_CONFIRMATION:
+                            message = Toast.makeText(getContext(),"Robot en déplacement, attendez...", Toast.LENGTH_SHORT);
                             message.setGravity(Gravity.CENTER, 0, 0);
                             message.show();
                             break;

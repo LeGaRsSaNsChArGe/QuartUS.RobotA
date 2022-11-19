@@ -52,11 +52,11 @@ public class Transition extends DialogFragment
                 essaies++;
                 if(essaies == 3)
                 {
-                    message = Toast.makeText(getContext(),"Cet Easter Egg prouve à quel point mon équipe mon fait confiance sur Android.. XD", Toast.LENGTH_LONG);
+                    message = Toast.makeText(getContext(),"Va falloir que tu sois plus patient que ça!", Toast.LENGTH_LONG);
                 }
                 else if(essaies == 2)
                 {
-                    message = Toast.makeText(getContext(),"NOPE! Vive les plans de tests.", Toast.LENGTH_SHORT);
+                    message = Toast.makeText(getContext(),"NOPE!", Toast.LENGTH_SHORT);
                 }
                 else
                 {

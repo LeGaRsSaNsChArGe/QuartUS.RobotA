@@ -6,24 +6,27 @@ import android.util.Log;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.example.interfacequartus.BuildConfig;
+import com.example.interfacequartus.Fragment.Planche;
 import com.example.interfacequartus.Model.Piece.Couleur;
 import com.example.interfacequartus.Model.Piece.Forme;
 import com.example.interfacequartus.Model.Piece.Taille;
 import com.example.interfacequartus.Model.Piece.Remplissage;
 
 import static com.example.interfacequartus.Activity.Accueil.DEBUG;
-import static com.example.interfacequartus.Activity.Partie.robotPret;
 
 public class Quarto
 {
     //Constantes
-    public static final int EGALITE = -2;
-    public static final int VICTOIRE = -1;
+    public static final int EGALITE = 2;
+    public static final int VICTOIRE = 1;
     public static final int OK = 0;
-    public static final int ERREUR = 1;
-    public static final int ERREUR_SELECTION = 2;
-    public static final int ERREUR_VIDE = 3;
-    public static final int ERREUR_ROBOT_NON_PRET = 4;
+    public static final int ERREUR = -1;
+    public static final int ERREUR_SELECTION = -2;
+    public static final int ERREUR_VIDE = -3;
+    public static final int ERREUR_CONFIRMATION = -4;
+
+    public static final int PRENDRE_PIECE = 0;
+    public static final int POSER_PIECE = 1;
 
     public static final int HUMAIN = 0;
 
@@ -187,15 +190,10 @@ public class Quarto
     //Méthodes
     public int prendreSelection(int x, int y)
     {
-        if(robotPret == false)
-            return ERREUR_ROBOT_NON_PRET;
         if(this.pieces[x][y].getPiece() == null)
             return ERREUR_VIDE;
         else if(this.selection != null)
             return ERREUR_SELECTION;
-
-
-
 
         this.selection = this.pieces[x][y].getPiece();
         this.pieces[x][y] = new Case();
@@ -216,14 +214,10 @@ public class Quarto
     }
     public int poseSelection(int x, int y)
     {
-        Log.d(DEBUG, String.valueOf(robotPret));
-        if(robotPret == false)
-            return ERREUR_ROBOT_NON_PRET;
         if(this.planche[x][y].getPiece() != null)
             return ERREUR;
         else if(this.selection == null)
             return ERREUR_SELECTION;
-
 
         this.planche[x][y] = new Case(this.selection);
         this.selection = null;
@@ -234,7 +228,8 @@ public class Quarto
         if(victoire(null))
             return VICTOIRE;
 
-        //TODO égalité
+        if(egalite())
+            return EGALITE;
 
         return OK;
     }
@@ -248,12 +243,8 @@ public class Quarto
         {
             planche = new Case[4][4];
             for(int r = 0 ; r < 4 ; r++)
-            {
                 for (int c = 0 ; c < 4 ; c++)
-                {
                     planche[r][c] = this.planche[r][c];
-                }
-            }
         }
 
         //Rangées
@@ -305,6 +296,18 @@ public class Quarto
         return resultat;
     }
 
+    public boolean egalite()
+    {
+        int compteur = 0;
+
+        for(int r = 0 ; r < 4 ; r++)
+            for (int c = 0; c < 4; c++)
+                if(!this.planche[r][c].estVide())
+                    compteur++;
+
+        return compteur == 16;
+    }
+
     public boolean verificationLigne(Case[] ligne)
     {
         //La ligne contient au moins une pièce vide
@@ -331,29 +334,6 @@ public class Quarto
         else
             return false;
     }
-
-    /*public boolean[][] suggestions()
-    {
-        boolean[][] suggestions = new boolean[4][4];
-
-        for(int r = 0 ; r < 4 ; r++)
-        {
-            for(int c = 0 ; c < 4 ; c++)
-            {
-                if(this.planche[r][c].getPiece() == null && this.selection != null)
-                {
-                    //TODO Algorithme batard, à remplacer éventuellement
-                    suggestions[r][c] = verificationVictoirePiece(this.selection, r, c);
-                }
-                else if(this.pieces[r][c].getPiece() != null && this.selection == null)
-                {
-                    suggestions[r][c] = !verificationVictoirePiece(this.pieces[r][c].getPiece(), r, c);
-                }
-            }
-        }
-
-        return suggestions;
-    }*/
 
     public boolean prendrePieceEstSuggestion(int t_r, int t_c)
     {

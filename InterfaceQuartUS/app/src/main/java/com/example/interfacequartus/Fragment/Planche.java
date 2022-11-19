@@ -2,11 +2,13 @@ package com.example.interfacequartus.Fragment;
 
 import static com.example.interfacequartus.Activity.Accueil.activitePrecedente;
 import static com.example.interfacequartus.Activity.Accueil.bluetooth;
-import static com.example.interfacequartus.Activity.Partie.robotPret;
+import static com.example.interfacequartus.Model.Quarto.EGALITE;
 import static com.example.interfacequartus.Model.Quarto.ERREUR;
+import static com.example.interfacequartus.Model.Quarto.ERREUR_CONFIRMATION;
 import static com.example.interfacequartus.Model.Quarto.ERREUR_SELECTION;
 import static com.example.interfacequartus.Model.Quarto.OK;
 import static com.example.interfacequartus.Model.Quarto.PLANCHE;
+import static com.example.interfacequartus.Model.Quarto.POSER_PIECE;
 import static com.example.interfacequartus.Model.Quarto.VICTOIRE;
 
 import android.content.Intent;
@@ -35,8 +37,6 @@ public class Planche extends Fragment
 {
     Partie parent;
     ImageView[][] imagePlanche = new ImageView[4][4];
-
-    //TODO toute la mécanique du plateau
 
     public Planche()
     {
@@ -86,32 +86,28 @@ public class Planche extends Fragment
                 imagePlanche[r][c] = view.findViewById(getResources().getIdentifier("i" + r + c, "id", getActivity().getPackageName()));
                 TextView textCase = view.findViewById(getResources().getIdentifier("t" + r + c, "id", getActivity().getPackageName()));
 
-                Case t_case = parent.getPartie().getCase(PLANCHE, r, c);
-                if(!t_case.estVide())
-                {
-                    imagePlanche[r][c].setColorFilter(ContextCompat.getColor(parent.getApplicationContext(), R.color.pieceCasePlanche), PorterDuff.Mode.SRC_OVER);
-                    //imagePlanche[r][c].setImageDrawable(t_case.getPiece().getDrawable());
-                    textCase.setText("T" + parent.getPartie().getCase(PLANCHE, r, c).getTour() + "\nJ" + parent.getPartie().getCase(PLANCHE, r, c).getJoueur());
-                }
+                miseAJourCase(textCase, r, c);
 
                 int t_r = r;
                 int t_c = c;
                 casePlanche.setOnClickListener(view1 ->
                 {
                     Toast message;
-                    switch(parent.getPartie().poseSelection(t_r, t_c))
+                    int cas = ERREUR_CONFIRMATION;
+                    if(bluetooth.estConfirmationFinEtape() && bluetooth.estActif())
+                        cas = parent.getPartie().poseSelection(t_r, t_c);
+                    else if(!bluetooth.estActif())
+                        cas = parent.getPartie().poseSelection(t_r, t_c);
+
+                    switch(cas)
                     {
                         case OK:
-                            imagePlanche[t_r][t_c].setColorFilter(ContextCompat.getColor(parent.getApplicationContext(), R.color.pieceCasePlanche), PorterDuff.Mode.SRC_OVER);
-                            //imagePlanche[t_r][t_c].setImageDrawable(parent.getPartie().getCase(PLANCHE, t_r, t_c).getPiece().getDrawable());
-                            textCase.setText("T" + parent.getPartie().getCase(PLANCHE, t_r, t_c).getTour() + "\nJ" + parent.getPartie().getCase(PLANCHE, t_r, t_c).getJoueur());
+                            miseAJourCase(textCase, t_r, t_c);
 
-                            //TODO Bluetooth
-                            if(parent.bluetoothActif())
+                            if(bluetooth.estActif())
                             {
-                                robotPret = false;
-                                parent.setBluetoothActif(bluetooth.envoieDonnees(parent.getIDplusplus(), 1, t_r, t_c, 0, parent.getPartie().getJoueurActif(), getFragmentManager()));
-                                if(!parent.bluetoothActif())
+                                bluetooth.setActif(bluetooth.envoieDonnees(parent.getIDplusplus(), POSER_PIECE, t_r, t_c, OK, parent.getPartie().getJoueurActif(), getFragmentManager()));
+                                if(!bluetooth.estActif())
                                 {
                                     message = Toast.makeText(getContext(),"ERREUR de transmission Bluetooth\nBluetooth désactivé!.", Toast.LENGTH_SHORT);
                                     message.setGravity(Gravity.CENTER, 0, 0);
@@ -120,57 +116,47 @@ public class Planche extends Fragment
                             }
                             break;
                         case VICTOIRE:
-                            imagePlanche[t_r][t_c].setColorFilter(ContextCompat.getColor(parent.getApplicationContext(), R.color.pieceCasePlanche), PorterDuff.Mode.SRC_OVER);
-                            //imageCase.setImageDrawable(partie.getCase(PLANCHE, t_r, t_c).getPiece().getDrawable());
-                            textCase.setText("T" + parent.getPartie().getCase(PLANCHE, t_r, t_c).getTour() + "\nJ" + parent.getPartie().getCase(PLANCHE, t_r, t_c).getJoueur());
+                        case EGALITE:
+                            miseAJourCase(textCase, t_r, t_c);
 
-                            //TODO Bluetooth
-                            if(parent.bluetoothActif())
+                            if(bluetooth.estActif())
                             {
-                                parent.setBluetoothActif(bluetooth.envoieDonnees(parent.getIDplusplus(), 1, t_r, t_c, 1, parent.getPartie().getJoueurActif(), getFragmentManager()));
-                                if(!parent.bluetoothActif())
+                                if(cas == VICTOIRE)
+                                    bluetooth.setActif(bluetooth.envoieDonnees(parent.getIDplusplus(), POSER_PIECE, t_r, t_c, VICTOIRE, parent.getPartie().getJoueurActif(), getFragmentManager()));
+                                else
+                                    bluetooth.setActif(bluetooth.envoieDonnees(parent.getIDplusplus(), POSER_PIECE, t_r, t_c, EGALITE, parent.getPartie().getJoueurActif(), getFragmentManager()));
+
+                                if(!bluetooth.estActif())
                                 {
                                     message = Toast.makeText(getContext(),"ERREUR de transmission Bluetooth\nBluetooth désactivé!.", Toast.LENGTH_SHORT);
                                     message.setGravity(Gravity.CENTER, 0, 0);
                                     message.show();
                                 }
-
-                                /*if(trueTODO si signal recu du bluetooth)
-                                {
-                                    //TODO : envoie du signal du joueur vainceur
-                                    if(parent.getPartie().getJoueur1().getTour() == Joueur.Tour.Actif)
-                                    {
-                                        bluetooth.envoieDonnees("#=1"); //Victoire joueur 1
-                                    }
-                                    else
-                                    {
-                                        if(parent.getPartie().getNiveau() > 0)
-                                        {
-                                            bluetooth.envoieDonnees("#=0"); //Victoire de QuartUS
-                                        }
-                                        else
-                                            bluetooth.envoieDonnees("#=2"); //Victoire joueur 2
-                                    }
-                                }*/
                             }
 
-                            if(parent.getPartie().getJoueur1().getTour() == Joueur.Tour.Actif)
+                            if(cas == VICTOIRE)
                             {
-                                if(parent.getPartie().getNiveau() > 0)
-                                    Accueil.score[0]++;
-
-                                message = Toast.makeText(getContext(), "Victoire du joueur 1", Toast.LENGTH_SHORT);
-                            }
-                            else
-                            {
-                                if(parent.getPartie().getNiveau() > 0)
+                                if(parent.getPartie().getJoueur1().getTour() == Joueur.Tour.Actif)
                                 {
-                                    Accueil.score[1]++;
-                                    message = Toast.makeText(getContext(), "Victoire de QuartUS!!!", Toast.LENGTH_SHORT);
+                                    if(parent.getPartie().getNiveau() > 0)
+                                        Accueil.score[0]++;
+
+                                    message = Toast.makeText(getContext(), "Victoire du joueur 1", Toast.LENGTH_SHORT);
                                 }
                                 else
-                                    message = Toast.makeText(getContext(), "Victoire du joueur 2", Toast.LENGTH_SHORT);
+                                {
+                                    if(parent.getPartie().getNiveau() > 0)
+                                    {
+                                        Accueil.score[1]++;
+                                        message = Toast.makeText(getContext(), "Victoire de QuartUS!!!", Toast.LENGTH_SHORT);
+                                    }
+                                    else
+                                        message = Toast.makeText(getContext(), "Victoire du joueur 2", Toast.LENGTH_SHORT);
+                                }
                             }
+                            else
+                                message = Toast.makeText(getContext(), "Égalité entre les joueurs!", Toast.LENGTH_SHORT);
+
                             message.setGravity(Gravity.CENTER, 0, 0);
                             message.show();
 
@@ -188,6 +174,11 @@ public class Planche extends Fragment
                             message.setGravity(Gravity.CENTER, 0, 0);
                             message.show();
                             break;
+                        case ERREUR_CONFIRMATION:
+                            message = Toast.makeText(getContext(),"Robot en déplacement, attendez...", Toast.LENGTH_SHORT);
+                            message.setGravity(Gravity.CENTER, 0, 0);
+                            message.show();
+                            break;
                         default:
                             break;
                     }
@@ -202,5 +193,20 @@ public class Planche extends Fragment
     public void setSuggestion(int r, int c)
     {
         imagePlanche[r][c].setColorFilter(ContextCompat.getColor(getContext(), R.color.pieceCasePlanche), PorterDuff.Mode.SRC_OVER);
+    }
+
+    private void miseAJourCase(TextView textCase, int r, int c)
+    {
+        Case t_case = parent.getPartie().getCase(PLANCHE, r, c);
+        if(!t_case.estVide())
+        {
+            if(bluetooth.estActif())
+            {
+                imagePlanche[r][c].setColorFilter(ContextCompat.getColor(parent.getApplicationContext(), R.color.pieceCasePlanche), PorterDuff.Mode.SRC_OVER);
+                textCase.setText("T" + parent.getPartie().getCase(PLANCHE, r, c).getTour() + "\nJ" + parent.getPartie().getCase(PLANCHE, r, c).getJoueur());
+            }
+            else
+                imagePlanche[r][c].setImageDrawable(t_case.getPiece().getDrawable());
+        }
     }
 }
