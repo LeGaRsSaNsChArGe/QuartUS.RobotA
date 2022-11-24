@@ -218,9 +218,7 @@ public class PeripheriqueBT
                 receptionFinEtapeBT.execute();
                 return true;
             }else
-            {
                 return false;
-            }
         }
         catch(IOException e)
         {

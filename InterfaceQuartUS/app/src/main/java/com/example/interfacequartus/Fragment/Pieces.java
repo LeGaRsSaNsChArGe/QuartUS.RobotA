@@ -27,6 +27,7 @@ import com.example.interfacequartus.Activity.Regles;
 import com.example.interfacequartus.BuildConfig;
 import com.example.interfacequartus.ImageViewCarrePortrait;
 import com.example.interfacequartus.Model.Case;
+import com.example.interfacequartus.Model.ReceptionFinEtapeBT;
 import com.example.interfacequartus.R;
 
 import java.util.concurrent.TimeUnit;
@@ -101,10 +102,14 @@ public class Pieces extends Fragment
                                     if(!parent.getPartie().getCase(PIECES, r1, c1).estVide())
                                         imagePieces[r1][c1].setImageDrawable(AppCompatResources.getDrawable(parent.getApplicationContext(), getResources().getIdentifier("p_" + r1 + c1, "drawable", BuildConfig.APPLICATION_ID)));
 
+                            //ReceptionFinEtapeBT receptionFinEtapeBT = new ReceptionFinEtapeBT(bluetooth.getContext());
+                            //receptionFinEtapeBT.execute();
+
                             imagePieces[t_r][t_c].setImageResource(android.R.color.transparent);
 
                             if(bluetooth.estActif())
-                            {bluetooth.setActif(bluetooth.envoieDonnees(parent.getIDplusplus(), PRENDRE_PIECE, t_r, t_c, OK, parent.getPartie().getJoueurActif()));
+                            {
+                                bluetooth.setActif(bluetooth.envoieDonnees(parent.getIDplusplus(), PRENDRE_PIECE, t_r, t_c, OK, parent.getPartie().getJoueurActif()));
                                 if(!bluetooth.estActif())
                                 {
                                     message = Toast.makeText(getContext(),"ERREUR de transmission Bluetooth\nBluetooth désactivé!", Toast.LENGTH_SHORT);

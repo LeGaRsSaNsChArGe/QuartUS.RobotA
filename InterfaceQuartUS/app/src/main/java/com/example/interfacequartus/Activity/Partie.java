@@ -1,5 +1,7 @@
 package com.example.interfacequartus.Activity;
 
+import static com.example.interfacequartus.Activity.Accueil.bluetooth;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -39,6 +41,8 @@ public class Partie extends AppCompatActivity
         Intent intentPartie = getIntent();
         int niveau = intentPartie.getIntExtra("niveau", -1);
         int mode = intentPartie.getIntExtra("mode", -1);
+
+        bluetooth.setContext(Partie.this);
 
         partie = new Quarto(getApplicationContext(), niveau, mode);
         ID = 0;
