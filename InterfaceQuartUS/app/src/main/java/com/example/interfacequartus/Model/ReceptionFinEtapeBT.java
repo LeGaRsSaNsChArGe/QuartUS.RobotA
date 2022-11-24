@@ -19,14 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-class ReceptionFinEtapeBT extends AsyncTask<Void, Void, Void>
+public class ReceptionFinEtapeBT extends AsyncTask<Void, Void, Void>
 {
     //Constantes
     public static final int TEMPS_DEPLACEMENT = 120;
 
     //Variables
     Context context;
-    FragmentManager fragmentManager;
     Transition transition;
 
     boolean confirmation;
@@ -42,10 +41,19 @@ class ReceptionFinEtapeBT extends AsyncTask<Void, Void, Void>
         this.confirmation = false;
 
         this.context = null;
-        this.fragmentManager = null;
         this.transition = null;
     }
-    public ReceptionFinEtapeBT(InputStream inStream, Byte ID, Context context, FragmentManager fragmentManager)
+    public ReceptionFinEtapeBT(Context context)
+    {
+        this.inStream = null;
+        this.ID = null;
+
+        this.confirmation = false;
+
+        this.context = context;
+        this.transition = null;
+    }
+    public ReceptionFinEtapeBT(InputStream inStream, Byte ID, Context context)
     {
         this.inStream = inStream;
         this.ID = ID;
@@ -53,7 +61,6 @@ class ReceptionFinEtapeBT extends AsyncTask<Void, Void, Void>
         this.confirmation = false;
 
         this.context = context;
-        this.fragmentManager = fragmentManager;
         this.transition = null;
     }
 
@@ -74,9 +81,9 @@ class ReceptionFinEtapeBT extends AsyncTask<Void, Void, Void>
     {
         super.onPreExecute();
 
-        transition = new Transition();
+        transition = new Transition(context);
         transition.setCancelable(false);
-        transition.show(fragmentManager, "Transition");
+        transition.show();
     }
 
     @Override
@@ -129,7 +136,6 @@ class ReceptionFinEtapeBT extends AsyncTask<Void, Void, Void>
         else
             message = Toast.makeText(context,"ERREUR de transmission Bluetooth\nBluetooth désactivé!.", Toast.LENGTH_SHORT);
 
-        message.setGravity(Gravity.CENTER, 0, 0);
         message.show();
     }
 }

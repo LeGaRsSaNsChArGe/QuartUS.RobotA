@@ -138,7 +138,6 @@ public class PeripheriqueBT
     public boolean verificationBluetooth() {
         if (adapteurBT.isEnabled()) {
             Toast message = Toast.makeText(context, "...Bluetooth activé...", Toast.LENGTH_LONG);
-            message.setGravity(Gravity.CENTER, 0, 0);
             message.show();
             return true;
         } else
@@ -204,7 +203,7 @@ public class PeripheriqueBT
         return true;
     }
 
-    public boolean envoieDonnees(byte ID, int deplacement, int r, int c, int victoire, int tourJoueur, FragmentManager fragmentManager)
+    public boolean envoieDonnees(byte ID, int deplacement, int r, int c, int victoire, int tourJoueur)
     {
         byte[] bytesBuffer = {ID, (byte)deplacement, (byte)r, (byte)c, (byte)victoire, (byte)tourJoueur, (byte)'#'};
         Log.d(DEBUG, "...Données envoyées: " + bytesBuffer + "...");
@@ -213,7 +212,7 @@ public class PeripheriqueBT
         {
             outStream.write(bytesBuffer);
 
-            receptionFinEtapeBT = new ReceptionFinEtapeBT(inStream, ID, this.context, fragmentManager);
+            receptionFinEtapeBT = new ReceptionFinEtapeBT(inStream, ID, this.context);
             if(recoieConfirmation(ID))
             {
                 receptionFinEtapeBT.execute();

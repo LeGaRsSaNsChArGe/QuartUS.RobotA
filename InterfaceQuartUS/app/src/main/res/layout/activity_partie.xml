@@ -47,7 +47,7 @@
                 android:paddingStart="0dp"
                 android:paddingEnd="30dp"
                 android:text="Q"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="60sp"
                 android:textStyle="normal" />
 
@@ -60,7 +60,7 @@
                 android:paddingStart="30dp"
                 android:paddingEnd="30dp"
                 android:text="uart"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="70sp"
                 android:textStyle="normal" />
 

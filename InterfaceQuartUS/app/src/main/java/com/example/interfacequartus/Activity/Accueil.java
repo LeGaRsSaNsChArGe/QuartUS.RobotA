@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64InputStream;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -13,7 +14,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
+import com.example.interfacequartus.Fragment.Transition;
 import com.example.interfacequartus.Model.PeripheriqueBT;
+import com.example.interfacequartus.Model.ReceptionFinEtapeBT;
 import com.example.interfacequartus.R;
 import com.example.interfacequartus.databinding.ActivityAccueilBinding;
 
@@ -90,7 +93,6 @@ public class Accueil extends AppCompatActivity {
                 binding.switchBluetooth.setClickable(false);
 
                 Toast message = Toast.makeText(getApplicationContext(),"Bluetooth non supporté", Toast.LENGTH_SHORT);
-                message.setGravity(Gravity.CENTER, 0, 0);
                 message.show();
             }
             else if(!bluetooth.verificationBluetooth())

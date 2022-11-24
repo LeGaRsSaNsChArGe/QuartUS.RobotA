@@ -8,6 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="noir1">#FF222222</color>
+    <color name="noir2">#FF333333</color>
+    <color name="noir3">#69000000</color>
+
     <color name="bleu">#FF0000FF</color>
     <color name="rouge">#FFFF0000</color>
     <color name="brun">#FF4E3524</color>

@@ -11,8 +11,11 @@ import com.example.interfacequartus.Model.Piece.Couleur;
 import com.example.interfacequartus.Model.Piece.Forme;
 import com.example.interfacequartus.Model.Piece.Taille;
 import com.example.interfacequartus.Model.Piece.Remplissage;
+import com.example.interfacequartus.R;
 
 import static com.example.interfacequartus.Activity.Accueil.DEBUG;
+
+import java.util.ArrayList;
 
 public class Quarto
 {
@@ -361,6 +364,243 @@ public class Quarto
         }
 
         return true;
+    }
+
+    private Piece[] verificationCaracteristiquesPieces()
+    {
+        //public enum Couleur{Blanche, Noire} private Piece.Couleur couleur;
+        //public enum Forme{Ronde, Carre} private Piece.Forme forme;
+        //public enum Taille{Haute, Basse} private Piece.Taille taille;
+        //public enum Remplissage{Pleine, Creuse} private Piece.Remplissage remplissage;
+
+        Piece[] caracteristiques = new Piece[2];
+        caracteristiques[0] = new Piece();
+        caracteristiques[1] = new Piece();
+
+        for(int r = 0 ; r < 4 ; r++)
+        {
+            for (int c = 0 ; c < 4 ; c++)
+            {
+                if(!pieces[r][c].estVide())
+                {
+                    if(pieces[r][c].getPiece().getCouleur() == Couleur.Blanche && caracteristiques[0].getCouleur() == null)
+                        caracteristiques[0].setCouleur(Couleur.Blanche);
+
+                    if(pieces[r][c].getPiece().getForme() == Forme.Ronde && caracteristiques[0].getForme() == null)
+                        caracteristiques[0].setForme(Forme.Ronde);
+
+                    if(pieces[r][c].getPiece().getTaille() == Taille.Haute && caracteristiques[0].getTaille() == null)
+                        caracteristiques[0].setTaille(Taille.Haute);
+
+                    if(pieces[r][c].getPiece().getRemplissage() == Remplissage.Pleine && caracteristiques[0].getRemplissage() == null)
+                        caracteristiques[0].setRemplissage(Remplissage.Pleine);
+
+                    if(pieces[r][c].getPiece().getCouleur() == Couleur.Noire && caracteristiques[1].getCouleur() == null)
+                        caracteristiques[1].setCouleur(Couleur.Noire);
+
+                    if(pieces[r][c].getPiece().getForme() == Forme.Carre && caracteristiques[1].getForme() == null)
+                        caracteristiques[1].setForme(Forme.Carre);
+
+                    if(pieces[r][c].getPiece().getTaille() == Taille.Basse && caracteristiques[1].getTaille() == null)
+                        caracteristiques[1].setTaille(Taille.Basse);
+
+                    if(pieces[r][c].getPiece().getRemplissage() == Remplissage.Creuse && caracteristiques[1].getRemplissage() == null)
+                        caracteristiques[1].setRemplissage(Remplissage.Creuse);
+                }
+            }
+        }
+
+        return caracteristiques;
+    }
+
+    public int poserPieceEstSuggestion(int t_r, int t_c)
+    {
+        int indice = indiceSuggestionPlanche(t_r, t_c);
+
+        /*Case[][] planche = new Case[4][4];
+        for(int r = 0 ; r < 4 ; r++)
+            for(int c = 0 ; c < 4 ; c++)
+                planche[r][c] = this.planche[r][c];*/
+
+        /*for(int r = 0 ; r < 4 ; r++)
+        {
+            for (int c = 0 ; c < 4 ; c++)
+            {
+                if(planche[r][c].estVide())
+                {
+                    planche[r][c] = new Case(this.pieces[t_r][t_c].getPiece());
+                    if(victoire(planche))
+                        return false;
+
+                    planche[r][c] = this.planche[r][c];
+                }
+            }
+        }*/
+
+
+        //int[] indices = new int[16];
+        //int i = 0;
+        /*for(int r = 0 ; r < 4 ; r++)
+            for (int c = 0; c < 4; c++)
+                if(indice < indiceSuggestionPlanche(r, c))
+                    return false;
+                //indices[i] = indiceSuggestionPlanche(r, c);
+                //i++;
+
+        return true;*/
+        return indice;
+    }
+
+    public int indiceSuggestionPlanche(int t_r, int t_c)
+    {
+        if(!this.planche[t_r][t_c].estVide() || this.selection == null)
+            return -1;
+
+        //Pour chaque pièce d'un alignement où une suite d'une caractéristique en comun +1
+        int indice = 0;
+        ArrayList<Case> ligne = new ArrayList<Case>();
+
+        //rangée
+        for(int c = 0 ; c < 4 ; c++)
+            if(!this.planche[t_r][c].estVide())
+                ligne.add(this.planche[t_r][c]);
+
+        indice += indiceParLigne(ligne);
+        /*if(t_r == 3 && t_c == 3)
+            Log.d(DEBUG, "INDICE - RANGÉE: " + indiceParLigne(ligne));*/
+        ligne.clear();
+
+        //Colonne
+        for(int r = 0 ; r < 4 ; r++)
+            if(!this.planche[r][t_c].estVide())
+                ligne.add(this.planche[r][t_c]);
+
+        indice += indiceParLigne(ligne);
+        /*if(t_r == 3 && t_c == 3)
+            Log.d(DEBUG, "INDICE - COLONNE: " + indiceParLigne(ligne));*/
+        ligne.clear();
+
+        //Diagonale 1
+        if(t_r == t_c)
+            for(int i = 0; i < 4; i++)
+                if(!this.planche[i][i].estVide())
+                    ligne.add(this.planche[i][i]);
+
+
+        indice += indiceParLigne(ligne);
+        ligne.clear();
+
+        //Diagonale 2
+        if(t_r == 3 - t_c)
+            for (int i = 0; i < 4; i++)
+                if (!this.planche[i][3-i].estVide())
+                    ligne.add(this.planche[i][3-i]);
+
+        indice += indiceParLigne(ligne);
+        ligne.clear();
+
+        //Carré
+        if(this.mode == COMPLEXE)
+        {
+            for(int r = 0 ; r < 4 ; r += 2)
+            {
+                for(int c = 0 ; c < 4 ; c += 2)
+                {
+                    if(t_r >= r && t_r <= r+1 && t_c >= c && t_c <= c+1)
+                    {
+                        if(!this.planche[r][c].estVide())
+                            ligne.add(planche[r][c]);
+                        if(!this.planche[r][c+1].estVide())
+                            ligne.add(planche[r][c+1]);
+                        if(!this.planche[r+1][c].estVide())
+                            ligne.add(planche[r+1][c]);
+                        if(!this.planche[r+1][c+1].estVide())
+                            ligne.add(planche[r+1][c+1]);
+
+                        indice += indiceParLigne(ligne);
+                        ligne.clear();
+                    }
+                }
+            }
+        }
+
+        return indice;
+    }
+
+    private int indiceParLigne(ArrayList<Case> ligne)
+    {
+        int indice = 0;
+        int[] indiceTampon = new int[4];
+        for(int i = 0 ; i < 4 ; i++)
+            indiceTampon[i] = 0;
+
+        int[] suite = new int[4];
+        for(int i = 0 ; i < 4 ; i++)
+            suite[i] = 0;
+
+        //Log.d(DEBUG, "SÉLECTION: " + this.selection.getCaracteristiques());
+
+        for(int c = 0 ; c < ligne.size() ; c++)
+        {
+            //Log.d(DEBUG, c + " == " + suite[0]);
+            if(ligne.get(c).getPiece().getCouleur() == this.selection.getCouleur() && c == suite[0])
+            {
+                //Log.d(DEBUG, "INDICE COULEUR: " + indiceTampon[0]);
+                suite[0]++;
+                indiceTampon[0] += suite[0]*suite[0];
+            }
+            else
+            {
+                indiceTampon[0] = 0;
+            }
+
+            if(ligne.get(c).getPiece().getForme() == this.selection.getForme() && c == suite[1])
+            {
+                suite[1]++;
+                indiceTampon[1] += suite[1]*suite[1];
+            }
+            else
+            {
+                indiceTampon[1] = 0;
+            }
+
+            if(ligne.get(c).getPiece().getTaille() == this.selection.getTaille() && c == suite[2])
+            {
+                suite[2]++;
+                indiceTampon[2] += suite[2]*suite[2];
+            }
+            else
+            {
+                indiceTampon[2] = 0;
+            }
+
+            if(ligne.get(c).getPiece().getRemplissage() == this.selection.getRemplissage() && c == suite[3])
+            {
+                suite[3]++;
+                indiceTampon[3] += suite[3]*suite[3];
+            }
+            else
+            {
+                indiceTampon[3] = 0;
+            }
+        }
+
+        //Log.d(DEBUG, "TAILLE LIGNE: " + ligne.size());
+        //Log.d(DEBUG, "-------------------------------");
+        //Log.d(DEBUG, "INDICE COULEUR: " + indiceTampon[0]);
+        //Log.d(DEBUG, "INDICE FORME: " + indiceTampon[1]);
+        //Log.d(DEBUG, "INDICE TAILLE: " + indiceTampon[2]);
+        //Log.d(DEBUG, "INDICE REMPLISSAGE: " + indiceTampon[3]);
+
+        for(int i = 0 ; i < 4 ; i++)
+        {
+            if (ligne.size() > 0)
+            {
+                indice += indiceTampon[i];
+            }
+        }
+
+        return indice;
     }
 
     /*public boolean verificationVictoirePiece(Piece piece)

@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.interfacequartus.Fragment.Pieces;
 import com.example.interfacequartus.Fragment.Planche;
+import com.example.interfacequartus.Fragment.Transition;
 import com.example.interfacequartus.Model.Quarto;
 import com.example.interfacequartus.R;
 import com.example.interfacequartus.databinding.ActivityPartieBinding;

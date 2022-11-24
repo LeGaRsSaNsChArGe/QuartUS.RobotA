@@ -104,29 +104,24 @@ public class Pieces extends Fragment
                             imagePieces[t_r][t_c].setImageResource(android.R.color.transparent);
 
                             if(bluetooth.estActif())
-                            {
-                                bluetooth.setActif(bluetooth.envoieDonnees(parent.getIDplusplus(), PRENDRE_PIECE, t_r, t_c, OK, parent.getPartie().getJoueurActif(), getFragmentManager()));
+                            {bluetooth.setActif(bluetooth.envoieDonnees(parent.getIDplusplus(), PRENDRE_PIECE, t_r, t_c, OK, parent.getPartie().getJoueurActif()));
                                 if(!bluetooth.estActif())
                                 {
                                     message = Toast.makeText(getContext(),"ERREUR de transmission Bluetooth\nBluetooth désactivé!", Toast.LENGTH_SHORT);
-                                    message.setGravity(Gravity.CENTER, 0, 0);
                                     message.show();
                                 }
                             }
                             break;
                         case ERREUR_VIDE:
                             message = Toast.makeText(getContext(),"Pièce déjà jouée...", Toast.LENGTH_SHORT);
-                            message.setGravity(Gravity.CENTER, 0, 0);
                             message.show();
                             break;
                         case ERREUR_SELECTION:
                             message = Toast.makeText(getContext(),"Pièce déjà sélectionnée...", Toast.LENGTH_SHORT);
-                            message.setGravity(Gravity.CENTER, 0, 0);
                             message.show();
                             break;
                         case ERREUR_CONFIRMATION:
                             message = Toast.makeText(getContext(),"Robot en déplacement, attendez...", Toast.LENGTH_SHORT);
-                            message.setGravity(Gravity.CENTER, 0, 0);
                             message.show();
                             break;
                         default:

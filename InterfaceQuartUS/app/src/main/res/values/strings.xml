@@ -1,5 +1,29 @@
 <resources>
     <string name="app_name">Interface QuartUS</string>
+    <string name="regles">PRÉSENTATION ET PRÉPARATION\n
+\u2022 Une planche de 16 cases vides.\n
+\u2022 16 pièces différentes ayant chacune 4 caractéristiques :\n
+claire ou foncée, ronde ou carrée, large ou mince, pleine ou creuse.\n
+\n
+BUT\n
+Créer un alignement de 4 pièces ayant au moins une caractéristique en commun sur la planche :\n
+\u2022 En mode classique, cet alignement peut être horizontal, vertical ou diagonal.\n
+\u2022 En mode complexe, l\'alignement peut être aussi un carré de 4 pièces situé à une des quatres extrémitées de la planche.\n
+\u2022 En mode simple, en accord le mode classique, seulement les 2 caractéristiques suivantes sont prises en compte : claire ou foncée, ronde ou carrée.\n
+\n
+DÉROULEMENT\n
+\u2022 Le premier joueur est tiré au sort.\n
+\u2022 Son adversaire choisit une des 16 pièces et la donne au premier joueur.\n
+\u2022 Celui-ci doit la placer sur une des cases de la planche et choisir ensuite une des 15 pièces restantes pour la donner à son adversaire.\n
+\u2022 A son tour, celui-ci la place sur une case libre et ainsi de suite…\n
+\n
+FIN\n
+\u2022 Victoire : la partie est gagnée par le premier joueur qui place la dernière pièce d\'un alignement de 4 pièces ayant au moins une caractéristique en commun sur la planche.\n
+\u2022 Égalité : toutes les pièces ont été posées sans vainqueur.\n
+\n
+DURÉE\n
+\u2022 De 10 à 20 minutes en moyenne.
+</string>
 
     <string-array name="niveau_du_robot">
         <item>Humain contre Humain</item>
@@ -9,9 +33,9 @@
     </string-array>
 
     <string-array name="mode_de_jeu">
-        <item>Débutant (Simple)</item>
-        <item>Amateur (Classique)</item>
-        <item>Expert (Complexe)</item>
+        <item>Simple (Débutant)</item>
+        <item>Classique (Amateur)</item>
+        <item> Complexe (Expert)</item>
     </string-array>
 </resources>
 

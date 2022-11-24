@@ -29,7 +29,7 @@ public class Configuration extends AppCompatActivity
         binding.listeNiveaux.setAdapter(new ArrayAdapter(this, R.layout.item_liste_defilante, getResources().getStringArray(R.array.niveau_du_robot)));
         binding.listeModes.setAdapter(new ArrayAdapter(this, R.layout.item_liste_defilante, getResources().getStringArray(R.array.mode_de_jeu)));
 
-        if(!bluetooth.estActif())
+        //if(!bluetooth.estActif())
             binding.listeNiveaux.setText(binding.listeNiveaux.getAdapter().getItem(0).toString());
 
         binding.boutonJeu.setOnClickListener(view ->
@@ -49,7 +49,6 @@ public class Configuration extends AppCompatActivity
                 niveau = -1;
 
                 Toast message = Toast.makeText(getApplicationContext(),"Choisir le niveau du robot", Toast.LENGTH_SHORT);
-                message.setGravity(Gravity.CENTER, 0, 0);
                 message.show();
             }
 
@@ -64,7 +63,6 @@ public class Configuration extends AppCompatActivity
                 mode = -1;
 
                 Toast message = Toast.makeText(getApplicationContext(),"Choisir le mode de jeu", Toast.LENGTH_SHORT);
-                message.setGravity(Gravity.CENTER, 0, 0);
                 message.show();
             }
 
